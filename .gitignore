@@ -1,0 +1,11 @@
+# dependencies
+/node_modules
+/build
+
+.DS_Store
+.env
+.idea
+.vscode
+
+npm-debug.log*
+
