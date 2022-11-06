@@ -52,6 +52,7 @@ model Event {
   calendarId Int
   name       String          @db.VarChar(255)
   color      String          @db.VarChar(255)
+  content    String          @db.Text
   startAt    DateTime        @db.Timestamp(0)
   endAt      DateTime        @db.Timestamp(0)
   category   EventCategory
