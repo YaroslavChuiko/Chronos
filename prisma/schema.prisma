@@ -12,4 +12,56 @@ model User {
   login    String @unique @db.VarChar(255)
   password String @db.Char(60)
   email    String @unique @db.VarChar(255)
+
+  calendars UserCalendars[]
+  events    UserEvents[]
+}
+
+//join table
+model UserCalendars {
+  userId     Int
+  calendarId Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  calendar   Calendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+
+  @@id([userId, calendarId])
+}
+
+///join table
+model UserEvents {
+  userId  Int
+  eventId Int
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([userId, eventId])
+}
+
+model Calendar {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(255)
+  description String? @db.VarChar(255)
+  color       String  @db.VarChar(255)
+
+  users  UserCalendars[]
+  events Event[]
+}
+
+model Event {
+  id         Int             @id @default(autoincrement())
+  calendarId Int
+  name       String          @db.VarChar(255)
+  color      String          @db.VarChar(255)
+  startAt    DateTime        @db.Timestamp(0)
+  endAt      DateTime        @db.Timestamp(0)
+  category   eventCategories
+
+  calendar Calendar     @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  users  UserEvents[]
+}
+
+enum eventCategories {
+  arrangement
+  reminder
+  task
 }
