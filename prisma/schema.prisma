@@ -54,13 +54,13 @@ model Event {
   color      String          @db.VarChar(255)
   startAt    DateTime        @db.Timestamp(0)
   endAt      DateTime        @db.Timestamp(0)
-  category   eventCategories
+  category   EventCategory
 
   calendar Calendar     @relation(fields: [calendarId], references: [id], onDelete: Cascade)
-  users  UserEvents[]
+  users    UserEvents[]
 }
 
-enum eventCategories {
+enum EventCategory {
   arrangement
   reminder
   task
