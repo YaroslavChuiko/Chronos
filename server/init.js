@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { errorMiddleware } = require('~/middleware');
+const router = require('~/routes');
 
 const serverInit = (app) => {
   app.use(express.json());
@@ -16,7 +17,8 @@ const serverInit = (app) => {
       allowedHeaders: 'Content-Type, Authorization, Set-Cookie',
     }),
   );
-  // app.use('/', router);
+  
+  app.use('/', router);
 
   app.use(errorMiddleware);
 };
