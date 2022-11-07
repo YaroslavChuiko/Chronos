@@ -21,6 +21,7 @@ model User {
 model UserCalendars {
   userId     Int
   calendarId Int
+  role       Role
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   calendar   Calendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
 
@@ -48,13 +49,13 @@ model Calendar {
 }
 
 model Event {
-  id         Int             @id @default(autoincrement())
+  id         Int           @id @default(autoincrement())
   calendarId Int
-  name       String          @db.VarChar(255)
-  color      String          @db.VarChar(255)
-  content    String          @db.Text
-  startAt    DateTime        @db.Timestamp(0)
-  endAt      DateTime        @db.Timestamp(0)
+  name       String        @db.VarChar(255)
+  color      String        @db.VarChar(255)
+  content    String        @db.Text
+  startAt    DateTime      @db.Timestamp(0)
+  endAt      DateTime      @db.Timestamp(0)
   category   EventCategory
 
   calendar Calendar     @relation(fields: [calendarId], references: [id], onDelete: Cascade)
@@ -65,4 +66,9 @@ enum EventCategory {
   arrangement
   reminder
   task
+}
+
+enum Role {
+  admin
+  guest
 }
