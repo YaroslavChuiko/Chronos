@@ -42,7 +42,7 @@ model Calendar {
   id          Int     @id @default(autoincrement())
   name        String  @db.VarChar(255)
   description String? @db.VarChar(255)
-  color       String  @db.VarChar(255)
+  color       String?  @db.VarChar(255) @default("white")
 
   users  UserCalendars[]
   events Event[]
@@ -71,4 +71,5 @@ enum EventCategory {
 enum Role {
   admin
   guest
+  moderator
 }

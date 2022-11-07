@@ -1,4 +1,4 @@
-const errorBoundary = (fn) => async (req, res, next) => {
+const boundary = (fn) => async (req, res, next) => {
   try {
     await fn(req, res, next);
   } catch (err) {
@@ -6,4 +6,4 @@ const errorBoundary = (fn) => async (req, res, next) => {
   }
 };
 
-module.exports = errorBoundary;
+module.exports = boundary;

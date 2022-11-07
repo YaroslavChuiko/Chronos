@@ -17,7 +17,7 @@ const serverInit = (app) => {
       allowedHeaders: 'Content-Type, Authorization, Set-Cookie',
     }),
   );
-  
+
   app.use('/', router);
 
   app.use(errorMiddleware);
