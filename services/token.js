@@ -12,7 +12,7 @@ const Token = {
 
   validate(token) {
     try {
-      return jwt.verify(token, TOKEN_SECRET);
+      return jwt.verify(token || '', TOKEN_SECRET);
     } catch (_err) {
       return null;
     }
