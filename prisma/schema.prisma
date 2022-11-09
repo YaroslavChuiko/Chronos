@@ -42,7 +42,7 @@ model Calendar {
   id          Int     @id @default(autoincrement())
   name        String  @db.VarChar(255)
   description String? @db.VarChar(255)
-  color       String?  @db.VarChar(255) @default("white")
+  color       String? @default("#fff") @db.VarChar(255)
 
   users  UserCalendars[]
   events Event[]
