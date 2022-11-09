@@ -8,8 +8,6 @@
     "migrate": "prisma migrate dev",
     "prisma": "prisma studio"
   },
-  "author": "SoftServe ITA",
-  "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.15",
     "prettier": "2.5.1",
