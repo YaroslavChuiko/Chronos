@@ -1,9 +1,8 @@
 const { ROLE_ENUM } = require('~/consts/validation');
 const { DEFAULT_CALENDAR, COOKIE_OPTIONS } = require('~/consts/default');
 const { user } = require('~/lib/prisma');
-const ServerError = require('~/helpers/error');
+const ServerError = require('~/helpers/server-error');
 const { hashPassword, comparePasswords } = require('~/helpers/password');
-const boundary = require('~/middleware/error-boundary');
 const Token = require('~/services/token');
 
 const checkFor = async (key, value) => {
@@ -89,9 +88,4 @@ const logout = async (_req, res) => {
   res.sendStatus(204);
 };
 
-module.exports = {
-  register: boundary(register),
-  login: boundary(login),
-  refresh: boundary(refresh),
-  logout: boundary(logout),
-};
+module.exports = { register, login, refresh, logout };

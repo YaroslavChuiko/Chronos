@@ -8,5 +8,3 @@
 .vscode
 
 npm-debug.log*
-
-prisma/migrations

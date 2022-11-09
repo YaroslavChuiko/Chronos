@@ -1,4 +1,4 @@
-const ServerError = require('~/helpers/error');
+const ServerError = require('~/helpers/server-error');
 const { user } = require('~/lib/prisma');
 const Token = require('~/services/token');
 

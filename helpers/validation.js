@@ -1,4 +1,4 @@
-const ServerError = require('~/helpers/error');
+const ServerError = require('~/helpers/server-error');
 
 const validate = (joiSchema) => (req, _res, next) => {
   const body = req.body;
