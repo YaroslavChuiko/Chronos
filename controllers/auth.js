@@ -3,7 +3,7 @@ const { DEFAULT_CALENDAR, COOKIE_OPTIONS } = require('~/consts/default');
 const { user } = require('~/lib/prisma');
 const ServerError = require('~/helpers/server-error');
 const { hashPassword, comparePasswords } = require('~/helpers/password');
-const Token = require('~/services/token');
+const { Token, Factory } = require('~/services');
 
 const checkFor = async (key, value) => {
   const exists = await user.findUnique({ where: { [key]: value } });
@@ -27,14 +27,12 @@ const register = async (req, res) => {
 
   data.password = await hashPassword(data.password);
 
-  const { id } = await user.create({
-    data: {
-      ...data,
-      calendars: {
-        create: {
-          role: ROLE_ENUM.moderator,
-          calendar: { create: DEFAULT_CALENDAR },
-        },
+  const { id } = await Factory.create(user, {
+    ...data,
+    calendars: {
+      create: {
+        role: ROLE_ENUM.moderator,
+        calendar: { create: DEFAULT_CALENDAR },
       },
     },
   });
@@ -45,13 +43,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { login, password } = req.body;
 
-  const found = await user.findUnique({
-    where: { login },
-  });
-
-  if (!found) {
-    throw new ServerError(404, 'The user was not found.');
-  }
+  const found = await Factory.exists(user, { login });
 
   const isAuthorized = await comparePasswords(password, found.password);
   if (!isAuthorized) {
@@ -72,11 +64,7 @@ const refresh = async (req, res) => {
     throw new ServerError(400, 'The refresh token is invalid.');
   }
 
-  const found = await user.findUnique({ where: { id: data.id } });
-  if (!found) {
-    throw new ServerError(404, "The user doesn't exist.");
-  }
-
+  const found = await Factory.exists(user, { id: data.id });
   const { accessToken, refreshToken } = generateUserTokens(found);
 
   res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);

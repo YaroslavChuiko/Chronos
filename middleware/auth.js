@@ -1,6 +1,6 @@
 const ServerError = require('~/helpers/server-error');
 const { user } = require('~/lib/prisma');
-const Token = require('~/services/token');
+const { Token, Factory } = require('~/services');
 
 const authenticate = async (req, _res, next) => {
   const header = req.headers.authorization;
@@ -11,10 +11,7 @@ const authenticate = async (req, _res, next) => {
     return next(new ServerError(401, 'The access token is invalid or has expired.'));
   }
 
-  const found = await user.findUnique({ where: { id: data.id } });
-  if (!found) {
-    return next(new ServerError(404, `The user with the ${data.id} id was not found.`));
-  }
+  const found = await Factory.exists(user, { id: data.id });
 
   req.user = found;
   next();

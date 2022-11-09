@@ -13,4 +13,8 @@ const updateSchema = Joi.object().keys({
   color: Joi.string().required().pattern(COLOR_PATTERN, 'color'),
 });
 
-module.exports = { createSchema, updateSchema };
+const shareSchema = Joi.object().keys({
+  email: Joi.string().email().required(),
+});
+
+module.exports = { createSchema, shareSchema, updateSchema };
