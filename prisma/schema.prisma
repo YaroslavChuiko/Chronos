@@ -8,10 +8,11 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  login    String @unique @db.VarChar(255)
-  password String @db.Char(60)
-  email    String @unique @db.VarChar(255)
+  id        Int       @id @default(autoincrement())
+  login     String    @unique @db.VarChar(255)
+  password  String    @db.Char(60)
+  email     String    @unique @db.VarChar(255)
+  createdAt DateTime  @db.Timestamp(0) @default(now())
 
   calendars UserCalendars[]
   events    UserEvents[]
@@ -19,30 +20,34 @@ model User {
 
 //join table
 model UserCalendars {
-  userId     Int
-  calendarId Int
-  role       Role
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  calendar   Calendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  userId      Int
+  calendarId  Int
+  role        Role
+  isConfirmed Boolean  @default(true)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  calendar    Calendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @db.Timestamp(0) @default(now())
 
   @@id([userId, calendarId])
 }
 
 ///join table
 model UserEvents {
-  userId  Int
-  eventId Int
-  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    Int
+  eventId   Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @db.Timestamp(0) @default(now())
 
   @@id([userId, eventId])
 }
 
 model Calendar {
-  id          Int     @id @default(autoincrement())
-  name        String  @db.VarChar(255)
-  description String? @db.VarChar(255)
-  color       String? @default("#fff") @db.VarChar(255)
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  color       String?   @default("#fff") @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  createdAt   DateTime  @db.Timestamp(0) @default(now())
 
   users  UserCalendars[]
   events Event[]
@@ -57,8 +62,9 @@ model Event {
   startAt    DateTime      @db.Timestamp(0)
   endAt      DateTime      @db.Timestamp(0)
   category   EventCategory
+  createdAt  DateTime      @db.Timestamp(0) @default(now())
 
-  calendar Calendar     @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  calendar Calendar        @relation(fields: [calendarId], references: [id], onDelete: Cascade)
   users    UserEvents[]
 }
 
