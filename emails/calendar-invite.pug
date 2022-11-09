@@ -1,0 +1,10 @@
+extends index 
+block title
+	h1 Confirm an invite to a calendar
+block description
+	div
+		p #{login} wants to share a calendar with you. If you agree to gain access to it, please click the button below to confirm:
+	div
+		a(href=`${process.env.CLIENT_URL}/confirm-invite?confirmToken=${token}`) Confirm the invite
+	div
+		p This link is only available for an hour.
