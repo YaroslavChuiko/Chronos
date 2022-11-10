@@ -1,19 +1,21 @@
 const templates = require('~/consts/email');
-const { ROLE } = require('~/consts/validation');
+const { ROLES } = require('~/consts/validation');
 const ServerError = require('~/helpers/server-error');
 const { calendar, user, userCalendars, event, userEvents, calendarEvents } = require('~/lib/prisma');
 const { Factory, Email, User, Token } = require('~/services');
 
-const authorCheck = async (req, _res, next) => {
-  const { id: userId } = req.user;
-  const calendarId = Number(req.params.id);
+const checkCalendarAction = async (calendarId, userId, roles) => {
+  await Factory.exists(calendar, { id: calendarId });
 
-  const toCheck = await User.userCalendarLink(calendarId, userId);
-  if (!toCheck || toCheck.role !== ROLE.calendar.admin) {
-    return next(new ServerError(403, 'You do not have the rights to perform this action.'));
-  }
+  const where = { userId_calendarId: { calendarId, userId } };
+  await Factory.hasRights(userCalendars, where, roles);
+};
 
-  next();
+const checkEventAction = async (eventId, userId, roles) => {
+  await Factory.exists(event, { id: eventId });
+
+  const where = { userId_eventId: { eventId, userId } };
+  return Factory.hasRights(userEvents, where, roles);
 };
 
 const createCalendar = async (req, res) => {
@@ -27,7 +29,7 @@ const createCalendar = async (req, res) => {
         create: [
           {
             user: { connect: { id } },
-            role: ROLE.calendar.admin,
+            role: ROLES.admin,
           },
         ],
       },
@@ -40,11 +42,9 @@ const createCalendar = async (req, res) => {
 const updateCalendar = async (req, res) => {
   const data = req.body;
   const calendarId = Number(req.params.id);
+  const userId = req.user.id;
 
-  const exist = await calendar.findUnique({ where: { id: calendarId } });
-  if (!exist) {
-    throw new ServerError(404, 'The calendar does not exist.');
-  }
+  await checkCalendarAction(calendarId, userId, [ROLES.admin]);
 
   const updatedCalendar = await calendar.update({
     where: { id: calendarId },
@@ -56,11 +56,9 @@ const updateCalendar = async (req, res) => {
 
 const deleteCalendar = async (req, res) => {
   const calendarId = Number(req.params.id);
+  const userId = req.user.id;
 
-  const exist = await calendar.findUnique({ where: { id: calendarId } });
-  if (!exist) {
-    throw new ServerError(404, 'The calendar does not exist.');
-  }
+  await checkCalendarAction(calendarId, userId, [ROLES.admin]);
 
   const deletedCalendar = await calendar.delete({
     where: { id: calendarId },
@@ -72,25 +70,17 @@ const deleteCalendar = async (req, res) => {
 const createCalendarEvent = async (req, res) => {
   const data = req.body;
   const calendarId = Number(req.params.id);
-  const { id: userId } = req.user;
-  const { admin, moderator } = ROLE.calendar;
+  const userId = req.user.id;
+  const { admin, moderator } = ROLES;
 
-  const exist = await calendar.findUnique({ where: { id: calendarId } });
-  if (!exist) {
-    throw new ServerError(404, 'The calendar does not exist.');
-  }
-
-  const toCheck = await userCalendars.findUnique({ where: { userId_calendarId: { userId, calendarId } } });
-  if (!toCheck || (toCheck.role !== admin && toCheck.role !== moderator)) {
-    throw new ServerError(403, 'You do not have the rights to perform this action.');
-  }
+  await checkCalendarAction(calendarId, userId, [admin, moderator]);
 
   const newEvent = await event.create({
     data: {
       ...data,
       users: {
         create: {
-          role: ROLE.event.admin,
+          role: ROLES.admin,
           user: { connect: { id: userId } },
         },
       },
@@ -108,26 +98,17 @@ const createCalendarEvent = async (req, res) => {
 const deleteCalendarEvent = async (req, res) => {
   const calendarId = Number(req.params.calendarId);
   const eventId = Number(req.params.eventId);
-  const { id: userId } = req.user;
+  const userId = req.user.id;
+  const { admin, guest, moderator } = ROLES;
 
-  //! check is calendar exist
-  //! check role in calendar
+  await checkCalendarAction(calendarId, userId, [admin, guest, moderator]);
+  const { role } = await checkEventAction(eventId, userId, [admin, guest]);
 
-  const exist = await event.findUnique({ where: { id: eventId } });
-  if (!exist) {
-    throw new ServerError(404, 'The event does not exist.');
-  }
-
-  const toCheck = await userEvents.findUnique({ where: { userId_eventId: { userId, eventId } } });
-  if (!toCheck) {
-    throw new ServerError(403, 'You do not have the rights to perform this action.');
-  }
-
-  if (toCheck.role === ROLE.event.admin) {
+  if (role === admin) {
     await event.delete({ where: { id: eventId } });
   }
 
-  if (toCheck.role === ROLE.event.guest) {
+  if (role === guest) {
     Promise.all([
       calendarEvents.delete({
         where: { calendarId_eventId: { calendarId, eventId } },
@@ -142,7 +123,9 @@ const deleteCalendarEvent = async (req, res) => {
 };
 
 const getInvitedUsers = async (req, res) => {
-  const calendarId = Number(req.params.id);
+  const id = Number(req.params.id);
+
+  await Factory.exists(calendar, { id });
 
   const users = await Factory.findMany(
     user,
@@ -150,7 +133,7 @@ const getInvitedUsers = async (req, res) => {
       calendars: {
         some: {
           isConfirmed: false,
-          calendar: { id: calendarId },
+          calendar: { id },
         },
       },
     },
@@ -162,8 +145,10 @@ const getInvitedUsers = async (req, res) => {
 
 const shareCalendar = async (req, res) => {
   const calendarId = Number(req.params.id);
-  const { login } = req.user;
+  const { login, id } = req.user;
   const { email } = req.body;
+
+  await checkCalendarAction(calendarId, id, [ROLES.admin]);
 
   const { id: userId } = await Factory.exists(user, { email });
 
@@ -175,7 +160,7 @@ const shareCalendar = async (req, res) => {
   await Factory.update(user, userId, {
     calendars: {
       create: {
-        role: ROLE.calendar.admin,
+        role: ROLES.admin,
         isConfirmed: false,
         calendar: {
           connect: { id: calendarId },
@@ -217,5 +202,4 @@ module.exports = {
   shareCalendar,
   confirmCalendar,
   getInvitedUsers,
-  authorCheck,
 };

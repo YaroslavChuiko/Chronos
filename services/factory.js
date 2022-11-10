@@ -9,6 +9,15 @@ const Factory = {
     return found;
   },
 
+  async hasRights(model, where, allowedRoles) {
+    const toCheck = await model.findUnique({ where });
+
+    if (!toCheck || !allowedRoles.includes(toCheck.role)) {
+      throw new ServerError(403, 'You do not have the rights to perform this action.');
+    }
+    return { role: toCheck.role };
+  },
+
   async findOne(model, id) {
     return model.findUnique({
       where: { id: Number(id) },
