@@ -193,6 +193,7 @@ const confirmCalendar = async (req, res) => {
 
   res.sendStatus(204);
 };
+
 module.exports = {
   createCalendar,
   updateCalendar,
