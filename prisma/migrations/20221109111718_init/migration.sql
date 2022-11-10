@@ -27,6 +27,7 @@ CREATE TABLE `UserCalendars` (
 CREATE TABLE `UserEvents` (
     `userId` INTEGER NOT NULL,
     `eventId` INTEGER NOT NULL,
+    `role` ENUM('admin', 'guest') NOT NULL,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
     PRIMARY KEY (`userId`, `eventId`)
@@ -44,15 +45,22 @@ CREATE TABLE `Calendar` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `CalendarEvents` (
+    `calendarId` INTEGER NOT NULL,
+    `eventId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`calendarId`, `eventId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Event` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `calendarId` INTEGER NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `color` VARCHAR(255) NOT NULL,
     `content` TEXT NOT NULL,
     `startAt` TIMESTAMP(0) NOT NULL,
     `endAt` TIMESTAMP(0) NOT NULL,
-    `category` ENUM('arrangement', 'reminder', 'task') NOT NULL,
+    `type` ENUM('arrangement', 'reminder', 'task') NOT NULL,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
     PRIMARY KEY (`id`)
@@ -71,4 +79,7 @@ ALTER TABLE `UserEvents` ADD CONSTRAINT `UserEvents_userId_fkey` FOREIGN KEY (`u
 ALTER TABLE `UserEvents` ADD CONSTRAINT `UserEvents_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Event`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Event` ADD CONSTRAINT `Event_calendarId_fkey` FOREIGN KEY (`calendarId`) REFERENCES `Calendar`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `CalendarEvents` ADD CONSTRAINT `CalendarEvents_calendarId_fkey` FOREIGN KEY (`calendarId`) REFERENCES `Calendar`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `CalendarEvents` ADD CONSTRAINT `CalendarEvents_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Event`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
