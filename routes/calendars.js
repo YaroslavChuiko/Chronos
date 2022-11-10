@@ -7,11 +7,12 @@ const {
   shareCalendar,
   confirmCalendar,
   getInvitedUsers,
+  createCalendarEvent,
 } = require('~/controllers/calendars');
 const authenticate = require('~/middleware/auth');
 const boundary = require('~/helpers/error-boundary');
 const validate = require('~/helpers/validation');
-const { createSchema, updateSchema, shareSchema } = require('~/validation/calendar');
+const { createSchema, updateSchema, shareSchema, createEventSchema } = require('~/validation/calendar');
 
 const router = express.Router();
 
@@ -27,7 +28,7 @@ router.use('/:id', authorCheck);
 router.put('/:id', validate(updateSchema), boundary(updateCalendar));
 router.delete('/:id', boundary(deleteCalendar));
 
-// router.post('/:calendarId/events/:eventId');
+router.post('/:id/events', validate(createEventSchema), boundary(createCalendarEvent));
 // router.delete('/:calendarId/events/:eventId');
 
 router.post('/:id/invite', validate(shareSchema), boundary(shareCalendar));
