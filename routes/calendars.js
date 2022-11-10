@@ -3,17 +3,15 @@ const {
   createCalendar,
   updateCalendar,
   deleteCalendar,
-  authorCheck,
   shareCalendar,
   confirmCalendar,
   getInvitedUsers,
-  createCalendarEvent,
-  deleteCalendarEvent,
 } = require('~/controllers/calendars');
 const authenticate = require('~/middleware/auth');
 const boundary = require('~/helpers/error-boundary');
 const validate = require('~/helpers/validation');
-const { createSchema, updateSchema, shareSchema, createEventSchema } = require('~/validation/calendar');
+const { createSchema, updateSchema, shareSchema } = require('~/validation/calendar');
+const eventRouter = require('~/routes/event');
 
 const router = express.Router();
 
@@ -21,15 +19,13 @@ router.use(authenticate);
 
 router.post('/', validate(createSchema), boundary(createCalendar));
 
-router.get('/:id/invited', boundary(getInvitedUsers));
-router.post('/invite-confirm/:token', boundary(confirmCalendar));
-
-router.post('/:id/events', validate(createEventSchema), boundary(createCalendarEvent));
-router.delete('/:calendarId/events/:eventId', boundary(deleteCalendarEvent));
-
 router.put('/:id', validate(updateSchema), boundary(updateCalendar));
 router.delete('/:id', boundary(deleteCalendar));
 
+router.get('/:id/invited', boundary(getInvitedUsers));
 router.post('/:id/invite', validate(shareSchema), boundary(shareCalendar));
+router.post('/invite-confirm/:token', boundary(confirmCalendar));
+
+router.use('/:id/events', eventRouter);
 
 module.exports = router;

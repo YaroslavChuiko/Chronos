@@ -96,7 +96,7 @@ const createCalendarEvent = async (req, res) => {
 };
 
 const deleteCalendarEvent = async (req, res) => {
-  const calendarId = Number(req.params.calendarId);
+  const calendarId = Number(req.params.id);
   const eventId = Number(req.params.eventId);
   const userId = req.user.id;
   const { admin, guest, moderator } = ROLES;
