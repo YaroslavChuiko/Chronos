@@ -8,6 +8,7 @@ const {
   confirmCalendar,
   getInvitedUsers,
   createCalendarEvent,
+  deleteCalendarEvent,
 } = require('~/controllers/calendars');
 const authenticate = require('~/middleware/auth');
 const boundary = require('~/helpers/error-boundary');
@@ -23,13 +24,13 @@ router.get('/:id/invited', boundary(getInvitedUsers));
 router.post('/', validate(createSchema), boundary(createCalendar));
 router.post('/invite-confirm/:token', boundary(confirmCalendar));
 
+router.post('/:id/events', validate(createEventSchema), boundary(createCalendarEvent));
+router.delete('/:calendarId/events/:eventId', boundary(deleteCalendarEvent));
+
 router.use('/:id', authorCheck);
 
 router.put('/:id', validate(updateSchema), boundary(updateCalendar));
 router.delete('/:id', boundary(deleteCalendar));
-
-router.post('/:id/events', validate(createEventSchema), boundary(createCalendarEvent));
-// router.delete('/:calendarId/events/:eventId');
 
 router.post('/:id/invite', validate(shareSchema), boundary(shareCalendar));
 
