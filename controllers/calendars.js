@@ -1,7 +1,7 @@
 const templates = require('~/consts/email');
-const { ROLE_ENUM } = require('~/consts/validation');
+const { ROLE } = require('~/consts/validation');
 const ServerError = require('~/helpers/server-error');
-const { calendar, user, userCalendars } = require('~/lib/prisma');
+const { calendar, user, userCalendars, event } = require('~/lib/prisma');
 const { Factory, Email, User, Token } = require('~/services');
 
 const authorCheck = async (req, _res, next) => {
@@ -9,7 +9,7 @@ const authorCheck = async (req, _res, next) => {
   const calendarId = Number(req.params.id);
 
   const toCheck = await User.userCalendarLink(calendarId, userId);
-  if (!toCheck || toCheck.role !== ROLE_ENUM.admin) {
+  if (!toCheck || toCheck.role !== ROLE.calendar.admin) {
     return next(new ServerError(403, 'You do not have the rights to perform this action.'));
   }
 
@@ -27,7 +27,7 @@ const createCalendar = async (req, res) => {
         create: [
           {
             user: { connect: { id } },
-            role: ROLE_ENUM.admin,
+            role: ROLE.calendar.admin,
           },
         ],
       },
@@ -69,6 +69,31 @@ const deleteCalendar = async (req, res) => {
   res.json(deletedCalendar);
 };
 
+const createCalendarEvent = async (req, res) => {
+  const data = req.body;
+  const calendarId = Number(req.params.id);
+  const { id } = req.user;
+
+  const newEvent = await event.create({
+    data: {
+      ...data,
+      users: {
+        create: {
+          role: ROLE.event.admin,
+          user: { connect: { id } },
+        },
+      },
+      calendars: {
+        create: {
+          calendar: { connect: { id: calendarId } },
+        },
+      },
+    },
+  });
+
+  res.status(201).json(newEvent);
+};
+
 const getInvitedUsers = async (req, res) => {
   const calendarId = Number(req.params.id);
 
@@ -103,7 +128,7 @@ const shareCalendar = async (req, res) => {
   await Factory.update(user, userId, {
     calendars: {
       create: {
-        role: ROLE_ENUM.guest,
+        role: ROLE.calendar.admin,
         isConfirmed: false,
         calendar: {
           connect: { id: calendarId },
@@ -140,6 +165,7 @@ module.exports = {
   createCalendar,
   updateCalendar,
   deleteCalendar,
+  createCalendarEvent,
   shareCalendar,
   confirmCalendar,
   getInvitedUsers,
