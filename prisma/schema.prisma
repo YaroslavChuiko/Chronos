@@ -22,7 +22,7 @@ model User {
 model UserCalendars {
   userId      Int
   calendarId  Int
-  role        Role
+  role        CalendarUserRole
   isConfirmed Boolean  @default(true)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   calendar    Calendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
@@ -35,6 +35,7 @@ model UserCalendars {
 model UserEvents {
   userId    Int
   eventId   Int
+  role      EventUserRole
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
   createdAt DateTime  @db.Timestamp(0) @default(now())
@@ -50,32 +51,46 @@ model Calendar {
   createdAt   DateTime  @db.Timestamp(0) @default(now())
 
   users  UserCalendars[]
-  events Event[]
+  events CalendarEvents[]
+}
+
+model CalendarEvents {
+  calendarId Int
+  eventId Int
+
+  calendar Calendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([calendarId, eventId])
 }
 
 model Event {
   id         Int           @id @default(autoincrement())
-  calendarId Int
   name       String        @db.VarChar(255)
   color      String        @db.VarChar(255)
   content    String        @db.Text
   startAt    DateTime      @db.Timestamp(0)
   endAt      DateTime      @db.Timestamp(0)
-  category   EventCategory
+  type       EventType
   createdAt  DateTime      @db.Timestamp(0) @default(now())
 
-  calendar Calendar        @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  calendars CalendarEvents[]
   users    UserEvents[]
 }
 
-enum EventCategory {
+enum EventType {
   arrangement
   reminder
   task
 }
 
-enum Role {
+enum CalendarUserRole {
   admin
   guest
   moderator
+}
+
+enum EventUserRole {
+  admin
+  guest
 }
