@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  login     String    @unique @db.VarChar(255)
-  password  String    @db.Char(60)
-  email     String    @unique @db.VarChar(255)
-  createdAt DateTime  @db.Timestamp(0) @default(now())
+  id                Int       @id @default(autoincrement())
+  login             String    @unique @db.VarChar(255)
+  password          String    @db.Char(60)
+  email             String    @unique @db.VarChar(255)
+  isEmailConfirmed  Boolean?  @default(false)
+  createdAt         DateTime  @db.Timestamp(0) @default(now())
 
   calendars UserCalendars[]
   events    UserEvents[]
@@ -23,7 +24,7 @@ model UserCalendars {
   userId      Int
   calendarId  Int
   role        Role
-  isConfirmed Boolean  @default(true)
+  isConfirmed Boolean? @default(true)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   calendar    Calendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
   createdAt   DateTime @db.Timestamp(0) @default(now())

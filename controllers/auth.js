@@ -3,7 +3,8 @@ const { DEFAULT_CALENDAR, COOKIE_OPTIONS } = require('~/consts/default');
 const { user } = require('~/lib/prisma');
 const ServerError = require('~/helpers/server-error');
 const { hashPassword, comparePasswords } = require('~/helpers/password');
-const { Token, Factory } = require('~/services');
+const { Token, Factory, Email } = require('~/services');
+const templates = require('~/consts/email');
 
 const checkFor = async (key, value) => {
   const exists = await user.findUnique({ where: { [key]: value } });
@@ -36,6 +37,9 @@ const register = async (req, res) => {
       },
     },
   });
+  const { email, login } = data;
+  const token = Token.generateConfirmToken({ id });
+  await Email.sendMail(email, templates.EMAIL_CONFIRM, { login, token });
 
   res.json({ id });
 };
@@ -48,6 +52,10 @@ const login = async (req, res) => {
   const isAuthorized = await comparePasswords(password, found.password);
   if (!isAuthorized) {
     throw new ServerError(401, 'The password is not correct.');
+  }
+
+  if (!found.isEmailConfirmed) {
+    throw new ServerError(403, 'Please confirm your email.');
   }
 
   const { accessToken, refreshToken } = generateUserTokens(found);
@@ -76,4 +84,16 @@ const logout = async (_req, res) => {
   res.sendStatus(204);
 };
 
-module.exports = { register, login, refresh, logout };
+const confirmEmail = async (req, res) => {
+  const { token } = req.params;
+  const data = Token.validate(token);
+  if (!data || !data.id) {
+    throw new ServerError(400, 'The confirm token is invalid or has expired.');
+  }
+
+  await Factory.update(user, data.id, { isEmailConfirmed: true });
+
+  res.json({ message: 'Email is confirmed.' });
+};
+
+module.exports = { register, login, refresh, logout, confirmEmail };

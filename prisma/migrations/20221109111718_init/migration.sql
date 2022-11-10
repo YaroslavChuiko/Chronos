@@ -4,6 +4,7 @@ CREATE TABLE `User` (
     `login` VARCHAR(255) NOT NULL,
     `password` CHAR(60) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
+    `isEmailConfirmed` BOOLEAN NULL DEFAULT false,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
     UNIQUE INDEX `User_login_key`(`login`),
@@ -16,7 +17,7 @@ CREATE TABLE `UserCalendars` (
     `userId` INTEGER NOT NULL,
     `calendarId` INTEGER NOT NULL,
     `role` ENUM('admin', 'guest', 'moderator') NOT NULL,
-    `isConfirmed` BOOLEAN NOT NULL DEFAULT true,
+    `isConfirmed` BOOLEAN NULL DEFAULT true,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
     PRIMARY KEY (`userId`, `calendarId`)
