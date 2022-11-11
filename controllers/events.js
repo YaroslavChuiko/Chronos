@@ -1,6 +1,9 @@
+const templates = require('~/consts/email');
 const { ROLES } = require('~/consts/validation');
 const { checkEventAction, checkCalendarAction } = require('~/helpers/action-checks');
-const { event, calendarEvents, userEvents } = require('~/lib/prisma');
+const ServerError = require('~/helpers/server-error');
+const { event, calendarEvents, userEvents, user, userCalendars, calendar } = require('~/lib/prisma');
+const { Token, Email, Factory } = require('~/services');
 
 const createEvent = async (req, res) => {
   const data = req.body;
@@ -72,4 +75,98 @@ const updateEvent = async (req, res) => {
   res.status(201).json(updatedEvent);
 };
 
-module.exports = { createEvent, deleteEvent, updateEvent };
+const shareEvent = async (req, res) => {
+  const eventId = Number(req.params.id);
+  const { login, id } = req.user;
+  const { email } = req.body;
+
+  const { id: userId } = await Factory.exists(user, { email });
+
+  await checkEventAction(eventId, id, [ROLES.admin]);
+
+  const exists = await userEvents.findUnique({
+    where: {
+      userId_eventId: { userId, eventId },
+    },
+  });
+  if (exists) {
+    throw new ServerError(400, 'This user already has access to the calendar.');
+  }
+
+  await user.update({
+    where: { id: userId },
+    data: {
+      events: {
+        create: {
+          role: ROLES.guest,
+          isConfirmed: false,
+          event: { connect: { id: eventId } },
+        },
+      },
+    },
+  });
+
+  const token = Token.generateConfirmToken({ userId, eventId });
+  await Email.sendMail(email, templates.EVENT_INVITE_CONFIRM, { login, token });
+
+  res.sendStatus(204);
+};
+
+const confirmEvent = async (req, res) => {
+  const { token } = req.params;
+  const data = Token.validate(token);
+
+  if (!data || !data.eventId || !data.userId) {
+    throw new ServerError(400, 'The confirm token is invalid.');
+  }
+  const { userId, eventId } = data;
+
+  const { id: calendarId } = await calendar.findFirst({
+    where: {
+      users: {
+        some: {
+          user: { id: userId },
+          role: ROLES.moderator,
+        },
+      },
+    },
+  });
+
+  await userEvents.update({
+    where: { userId_eventId: { userId, eventId } },
+    data: { isConfirmed: true },
+  });
+
+  await calendar.update({
+    where: { id: calendarId },
+    data: {
+      events: {
+        create: { event: { connect: { id: eventId } } },
+      },
+    },
+  });
+
+  res.sendStatus(204);
+};
+
+const getInvitedUsers = async (req, res) => {
+  const id = Number(req.params.id);
+
+  await Factory.exists(event, { id });
+
+  const users = await user.findMany({
+    where: {
+      events: {
+        some: {
+          isConfirmed: false,
+          event: { id },
+        },
+      },
+    },
+    select: { id: true, email: true },
+  });
+
+  res.json(users);
+};
+
+module.exports = { createEvent, deleteEvent, updateEvent, shareEvent, confirmEvent, getInvitedUsers };
