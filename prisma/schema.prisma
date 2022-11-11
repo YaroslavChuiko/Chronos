@@ -37,6 +37,7 @@ model UserEvents {
   userId    Int
   eventId   Int
   role      EventUserRole
+  isConfirmed Boolean?         @default(true)
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   event     Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
   createdAt DateTime      @default(now()) @db.Timestamp(0)
