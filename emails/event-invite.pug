@@ -1,0 +1,10 @@
+extends index 
+block title
+	h1 Confirm an invite to an event
+block description
+	div
+		p #{login} wants to share an event with you. If you agree to gain access to it, please click the button below to confirm:
+	div
+		a(href=`${process.env.CLIENT_URL}/event-confirm-invite?confirmToken=${token}`) Confirm the invite
+	div
+		p This link is only available for an hour.
