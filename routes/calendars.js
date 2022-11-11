@@ -6,6 +6,8 @@ const {
   shareCalendar,
   confirmCalendar,
   getInvitedUsers,
+  getCalendars,
+  getCalendarById,
 } = require('~/controllers/calendars');
 const authenticate = require('~/middleware/auth');
 const boundary = require('~/helpers/error-boundary');
@@ -17,8 +19,10 @@ const router = express.Router();
 
 router.use(authenticate);
 
+router.get('/', boundary(getCalendars));
 router.post('/', validate(createSchema), boundary(createCalendar));
 
+router.get('/:id', boundary(getCalendarById));
 router.put('/:id', validate(updateSchema), boundary(updateCalendar));
 router.delete('/:id', boundary(deleteCalendar));
 

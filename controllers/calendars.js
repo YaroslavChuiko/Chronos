@@ -5,6 +5,33 @@ const ServerError = require('~/helpers/server-error');
 const { calendar, user, userCalendars } = require('~/lib/prisma');
 const { Factory, Email, Token } = require('~/services');
 
+const getCalendars = async (req, res) => {
+  const { id } = req.user;
+
+  const calendars = await Factory.findMany(
+    calendar,
+    {
+      users: {
+        some: { user: { id } },
+      },
+    },
+    null,
+  );
+
+  res.json(calendars);
+};
+
+const getCalendarById = async (req, res) => {
+  const id = Number(req.params.id);
+  const { id: userId } = req.user;
+
+  await checkCalendarAction(id, userId, Object.values(ROLES));
+
+  const found = await Factory.findOne(calendar, id);
+
+  res.json(found);
+};
+
 const createCalendar = async (req, res) => {
   const data = req.body;
   const { id } = req.user;
@@ -131,6 +158,8 @@ const confirmCalendar = async (req, res) => {
 };
 
 module.exports = {
+  getCalendars,
+  getCalendarById,
   createCalendar,
   updateCalendar,
   deleteCalendar,

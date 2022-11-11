@@ -37,9 +37,9 @@ const deleteEvent = async (req, res) => {
   const calendarId = Number(req.params.id);
   const eventId = Number(req.params.eventId);
   const userId = req.user.id;
-  const { admin, guest, moderator } = ROLES;
+  const { admin, guest } = ROLES;
 
-  await checkCalendarAction(calendarId, userId, [admin, guest, moderator]);
+  await checkCalendarAction(calendarId, userId, Object.values(ROLES));
   const { role } = await checkEventAction(eventId, userId, [admin, guest]);
 
   if (role === admin) {
