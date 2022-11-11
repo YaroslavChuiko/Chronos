@@ -2,8 +2,35 @@ const templates = require('~/consts/email');
 const { ROLES } = require('~/consts/validation');
 const { checkEventAction, checkCalendarAction } = require('~/helpers/action-checks');
 const ServerError = require('~/helpers/server-error');
-const { event, calendarEvents, userEvents, user, userCalendars, calendar } = require('~/lib/prisma');
+const { event, calendarEvents, userEvents, user, calendar } = require('~/lib/prisma');
 const { Token, Email, Factory } = require('~/services');
+const getDateFilter = require('~/helpers/filtering');
+
+const getCalendarEvents = async (req, res) => {
+  const calendarId = Number(req.params.id);
+  const userId = req.user.id;
+  const { startAt, endAt } = req.query;
+
+  const filters = getDateFilter(startAt, endAt);
+
+  await checkCalendarAction(calendarId, userId, Object.values(ROLES));
+
+  const events = await Factory.findMany(
+    event,
+    {
+      users: {
+        some: { user: { id: userId } },
+      },
+      calendars: {
+        some: { calendar: { id: calendarId } },
+      },
+      ...filters,
+    },
+    null,
+  );
+
+  res.json(events);
+};
 
 const createEvent = async (req, res) => {
   const data = req.body;
@@ -47,7 +74,7 @@ const deleteEvent = async (req, res) => {
   }
 
   if (role === guest) {
-    Promise.all([
+    await Promise.all([
       calendarEvents.delete({
         where: { calendarId_eventId: { calendarId, eventId } },
       }),
@@ -169,4 +196,12 @@ const getInvitedUsers = async (req, res) => {
   res.json(users);
 };
 
-module.exports = { createEvent, deleteEvent, updateEvent, shareEvent, confirmEvent, getInvitedUsers };
+module.exports = {
+  getCalendarEvents,
+  createEvent,
+  deleteEvent,
+  updateEvent,
+  shareEvent,
+  confirmEvent,
+  getInvitedUsers,
+};

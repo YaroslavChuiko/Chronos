@@ -61,7 +61,7 @@ const updateCalendar = async (req, res) => {
   await checkCalendarAction(calendarId, userId, [ROLES.admin]);
 
   const updatedCalendar = await calendar.update({
-    where: { id: calendarId },
+    where: { id: calendarId, create: { users: { some: { id: userId } } } },
     data,
   });
 
