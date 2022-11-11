@@ -1,22 +1,9 @@
 const templates = require('~/consts/email');
 const { ROLES } = require('~/consts/validation');
+const { checkCalendarAction } = require('~/helpers/action-checks');
 const ServerError = require('~/helpers/server-error');
-const { calendar, user, userCalendars, event, userEvents, calendarEvents } = require('~/lib/prisma');
+const { calendar, user, userCalendars } = require('~/lib/prisma');
 const { Factory, Email, User, Token } = require('~/services');
-
-const checkCalendarAction = async (calendarId, userId, roles) => {
-  await Factory.exists(calendar, { id: calendarId });
-
-  const where = { userId_calendarId: { calendarId, userId } };
-  await Factory.hasRights(userCalendars, where, roles);
-};
-
-const checkEventAction = async (eventId, userId, roles) => {
-  await Factory.exists(event, { id: eventId });
-
-  const where = { userId_eventId: { eventId, userId } };
-  return Factory.hasRights(userEvents, where, roles);
-};
 
 const createCalendar = async (req, res) => {
   const data = req.body;
@@ -65,61 +52,6 @@ const deleteCalendar = async (req, res) => {
   });
 
   res.json(deletedCalendar);
-};
-
-const createCalendarEvent = async (req, res) => {
-  const data = req.body;
-  const calendarId = Number(req.params.id);
-  const userId = req.user.id;
-  const { admin, moderator } = ROLES;
-
-  await checkCalendarAction(calendarId, userId, [admin, moderator]);
-
-  const newEvent = await event.create({
-    data: {
-      ...data,
-      users: {
-        create: {
-          role: ROLES.admin,
-          user: { connect: { id: userId } },
-        },
-      },
-      calendars: {
-        create: {
-          calendar: { connect: { id: calendarId } },
-        },
-      },
-    },
-  });
-
-  res.status(201).json(newEvent);
-};
-
-const deleteCalendarEvent = async (req, res) => {
-  const calendarId = Number(req.params.id);
-  const eventId = Number(req.params.eventId);
-  const userId = req.user.id;
-  const { admin, guest, moderator } = ROLES;
-
-  await checkCalendarAction(calendarId, userId, [admin, guest, moderator]);
-  const { role } = await checkEventAction(eventId, userId, [admin, guest]);
-
-  if (role === admin) {
-    await event.delete({ where: { id: eventId } });
-  }
-
-  if (role === guest) {
-    Promise.all([
-      calendarEvents.delete({
-        where: { calendarId_eventId: { calendarId, eventId } },
-      }),
-      userEvents.delete({
-        where: { userId_eventId: { userId, eventId } },
-      }),
-    ]);
-  }
-
-  res.sendStatus(204);
 };
 
 const getInvitedUsers = async (req, res) => {
@@ -198,8 +130,6 @@ module.exports = {
   createCalendar,
   updateCalendar,
   deleteCalendar,
-  createCalendarEvent,
-  deleteCalendarEvent,
   shareCalendar,
   confirmCalendar,
   getInvitedUsers,
