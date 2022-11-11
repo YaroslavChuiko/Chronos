@@ -3,7 +3,7 @@ const { ROLES } = require('~/consts/validation');
 const { checkCalendarAction } = require('~/helpers/action-checks');
 const ServerError = require('~/helpers/server-error');
 const { calendar, user, userCalendars } = require('~/lib/prisma');
-const { Factory, Email, User, Token } = require('~/services');
+const { Factory, Email, Token } = require('~/services');
 
 const createCalendar = async (req, res) => {
   const data = req.body;
@@ -80,11 +80,15 @@ const shareCalendar = async (req, res) => {
   const { login, id } = req.user;
   const { email } = req.body;
 
-  await checkCalendarAction(calendarId, id, [ROLES.admin]);
-
   const { id: userId } = await Factory.exists(user, { email });
 
-  const exists = await User.userCalendarLink(calendarId, userId);
+  await checkCalendarAction(calendarId, id, [ROLES.admin]);
+
+  const exists = await userCalendars.findUnique({
+    where: {
+      userId_calendarId: { calendarId, userId },
+    },
+  });
   if (exists) {
     throw new ServerError(400, 'This user already has access to the calendar.');
   }
@@ -92,7 +96,7 @@ const shareCalendar = async (req, res) => {
   await Factory.update(user, userId, {
     calendars: {
       create: {
-        role: ROLES.admin,
+        role: ROLES.guest,
         isConfirmed: false,
         calendar: {
           connect: { id: calendarId },

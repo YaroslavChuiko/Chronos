@@ -11,10 +11,12 @@ const authenticate = async (req, _res, next) => {
     return next(new ServerError(401, 'The access token is invalid or has expired.'));
   }
 
-  const found = await Factory.exists(user, { id: data.id });
-
-  req.user = found;
-  next();
+  try {
+    req.user = await Factory.exists(user, { id: data.id });
+    next();
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = authenticate;

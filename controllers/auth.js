@@ -1,4 +1,4 @@
-const { ROLE } = require('~/consts/validation');
+const { ROLES } = require('~/consts/validation');
 const { DEFAULT_CALENDAR, COOKIE_OPTIONS } = require('~/consts/default');
 const { user } = require('~/lib/prisma');
 const ServerError = require('~/helpers/server-error');
@@ -32,7 +32,7 @@ const register = async (req, res) => {
     ...data,
     calendars: {
       create: {
-        role: ROLE.calendar.moderator,
+        role: ROLES.moderator,
         calendar: { create: DEFAULT_CALENDAR },
       },
     },
