@@ -1,6 +1,6 @@
 const toDate = require('./to-date');
 
-const getDateFilter = (startAt, endAt) => {
+const getEventFilters = ({ startAt, endAt, type }) => {
   const filters = {};
 
   if (startAt) {
@@ -9,8 +9,11 @@ const getDateFilter = (startAt, endAt) => {
   if (endAt) {
     filters.endAt = { lte: toDate(endAt) };
   }
+  if (type) {
+    filters.type = type;
+  }
 
   return filters;
 };
 
-module.exports = getDateFilter;
+module.exports = { getEventFilters };
