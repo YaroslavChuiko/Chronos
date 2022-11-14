@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "app.js",
+  "prisma": {
+    "seed": "node prisma/seeders"
+  },
   "scripts": {
     "start": "nodemon app.js",
     "migrate": "prisma migrate dev",
