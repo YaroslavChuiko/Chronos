@@ -60,7 +60,7 @@ CREATE TABLE `Event` (
     `color` VARCHAR(255) NULL DEFAULT '#fff',
     `content` TEXT NOT NULL,
     `startAt` TIMESTAMP(0) NOT NULL,
-    `endAt` TIMESTAMP(0) NULL,
+    `endAt` TIMESTAMP(0) NOT NULL,
     `type` ENUM('arrangement', 'reminder', 'task') NOT NULL,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
