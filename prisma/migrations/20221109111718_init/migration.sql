@@ -6,6 +6,7 @@ CREATE TABLE `User` (
     `email` VARCHAR(255) NOT NULL,
     `isEmailConfirmed` BOOLEAN NULL DEFAULT false,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
     UNIQUE INDEX `User_login_key`(`login`),
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -18,6 +19,7 @@ CREATE TABLE `UserCalendars` (
     `role` ENUM('admin', 'guest', 'moderator') NOT NULL,
     `isConfirmed` BOOLEAN NULL DEFAULT true,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
     PRIMARY KEY (`userId`, `calendarId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -28,6 +30,7 @@ CREATE TABLE `UserEvents` (
     `role` ENUM('admin', 'guest') NOT NULL,
     `isConfirmed` BOOLEAN NULL DEFAULT true,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
     PRIMARY KEY (`userId`, `eventId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -38,6 +41,7 @@ CREATE TABLE `Calendar` (
     `color` VARCHAR(255) NULL DEFAULT '#fff',
     `description` VARCHAR(255) NULL,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -45,6 +49,7 @@ CREATE TABLE `Calendar` (
 CREATE TABLE `CalendarEvents` (
     `calendarId` INTEGER NOT NULL,
     `eventId` INTEGER NOT NULL,
+
     PRIMARY KEY (`calendarId`, `eventId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -52,47 +57,30 @@ CREATE TABLE `CalendarEvents` (
 CREATE TABLE `Event` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `color` VARCHAR(255) NOT NULL,
+    `color` VARCHAR(255) NULL DEFAULT '#fff',
     `content` TEXT NOT NULL,
     `startAt` TIMESTAMP(0) NOT NULL,
-    `endAt` TIMESTAMP(0) NOT NULL,
+    `endAt` TIMESTAMP(0) NULL,
     `type` ENUM('arrangement', 'reminder', 'task') NOT NULL,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE
-    `UserCalendars`
-ADD
-    CONSTRAINT `UserCalendars_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `UserCalendars` ADD CONSTRAINT `UserCalendars_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `UserCalendars`
-ADD
-    CONSTRAINT `UserCalendars_calendarId_fkey` FOREIGN KEY (`calendarId`) REFERENCES `Calendar`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `UserCalendars` ADD CONSTRAINT `UserCalendars_calendarId_fkey` FOREIGN KEY (`calendarId`) REFERENCES `Calendar`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `UserEvents`
-ADD
-    CONSTRAINT `UserEvents_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `UserEvents` ADD CONSTRAINT `UserEvents_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `UserEvents`
-ADD
-    CONSTRAINT `UserEvents_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Event`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `UserEvents` ADD CONSTRAINT `UserEvents_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Event`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `CalendarEvents`
-ADD
-    CONSTRAINT `CalendarEvents_calendarId_fkey` FOREIGN KEY (`calendarId`) REFERENCES `Calendar`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `CalendarEvents` ADD CONSTRAINT `CalendarEvents_calendarId_fkey` FOREIGN KEY (`calendarId`) REFERENCES `Calendar`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE
-    `CalendarEvents`
-ADD
-    CONSTRAINT `CalendarEvents_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Event`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `CalendarEvents` ADD CONSTRAINT `CalendarEvents_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `Event`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
