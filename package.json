@@ -20,11 +20,14 @@
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "holidayapi": "^6.0.1",
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
+    "node-ipinfo": "^3.1.1",
     "nodemailer": "^6.8.0",
     "pug": "^3.0.2",
+    "request-ip": "^3.3.0",
     "winston": "^3.8.0"
   }
 }

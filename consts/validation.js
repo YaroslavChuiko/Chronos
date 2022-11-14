@@ -16,6 +16,8 @@ const EVENT_TYPE_ENUM = {
   task: 'task',
 };
 
+const HOLIDAY_TYPE = 'holiday';
+
 module.exports = {
   NAME_LENGTH,
   PASSWORD_LENGTH,
@@ -24,4 +26,5 @@ module.exports = {
   CALENDAR_NAME_LENGTH,
   CALENDAR_DESCRIPTION_LENGTH,
   COLOR_PATTERN,
+  HOLIDAY_TYPE,
 };

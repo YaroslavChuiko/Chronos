@@ -1,6 +1,9 @@
+const requestIP = require('request-ip');
+const { DEFAULT_HOLIDAY } = require('~/consts/default');
 const templates = require('~/consts/email');
 const { ROLES } = require('~/consts/validation');
 const { checkCalendarAction } = require('~/helpers/action-checks');
+const { getHolidaysByIP } = require('~/helpers/holiday-api');
 const ServerError = require('~/helpers/server-error');
 const { calendar, user, userCalendars } = require('~/lib/prisma');
 const { Factory, Email, Token } = require('~/services');
@@ -30,6 +33,15 @@ const getCalendarById = async (req, res) => {
   const found = await Factory.findOne(calendar, id);
 
   res.json(found);
+};
+
+const getHolidays = async (req, res) => {
+  const ip = requestIP.getClientIp(req);
+  const holidays = await getHolidaysByIP(ip);
+
+  const data = holidays.map(DEFAULT_HOLIDAY);
+
+  res.json(data);
 };
 
 const createCalendar = async (req, res) => {
@@ -160,6 +172,7 @@ const confirmCalendar = async (req, res) => {
 module.exports = {
   getCalendars,
   getCalendarById,
+  getHolidays,
   createCalendar,
   updateCalendar,
   deleteCalendar,
