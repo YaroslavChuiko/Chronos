@@ -10,6 +10,12 @@ const { Factory, Email, Token } = require('~/services');
 
 const getCalendars = async (req, res) => {
   const { id } = req.user;
+  const { calendarIDs: ids } = req.body;
+
+  const filters = {};
+  if (ids && ids.length) {
+    filters.id = { in: ids };
+  }
 
   const calendars = await Factory.findMany(
     calendar,
@@ -17,6 +23,7 @@ const getCalendars = async (req, res) => {
       users: {
         some: { user: { id } },
       },
+      ...filters,
     },
     null,
   );
