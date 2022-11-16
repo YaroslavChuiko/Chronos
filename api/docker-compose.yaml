@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    env_file: ./.env
+    environment:
+      - MYSQL_USER=$DB_USER
+      - MYSQL_PASSWORD=$DB_PASSWORD
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
+      - MYSQL_DATABASE=$DB_NAME
+    ports:
+      - $DB_LOCAL_PORT:$DB_DOCKER_PORT
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u${DB_USER}', '-p${DB_PASSWORD}']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+
+    build: .
+    env_file: ./.env
+    ports:
+      - $SERVER_PORT:$SERVER_PORT
+    environment:
+      - DB_HOST=mysqldb
+      - DATABASE_URL=mysql://pbalazhy:pbalazhy135091@mysqldb:3306/chronos
+    stdin_open: true
+    tty: true
+
+  # web:
+  #   depends_on:
+  #     - api
+  #   build: ../web
+  #   ports:
+  #     - '3000:3000'
+  #   env_file: ../web/.env.local
+  #   stdin_open: true
+  #   tty: true
+
+volumes:
+  db:
