@@ -1,13 +1,13 @@
-import { Route, Routes } from 'react-router-dom';
-import Hello from '~/pages/Hello/Hello';
-import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
+import { Route, Routes } from "react-router-dom";
+import Login from "./pages/Auth/Login";
+import Register from "./pages/Auth/Register";
+import CalendarPage from "./pages/Main/Main";
 
 const App = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<CalendarPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>

@@ -6,6 +6,8 @@
     "@chakra-ui/react": "^2.3.7",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@fullcalendar/daygrid": "^5.11.3",
+    "@fullcalendar/react": "^5.11.2",
     "@reduxjs/toolkit": "^1.9.0",
     "formik": "^2.2.9",
     "framer-motion": "^7.6.6",
