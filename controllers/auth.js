@@ -51,17 +51,19 @@ const login = async (req, res) => {
 
   const isAuthorized = await comparePasswords(password, found.password);
   if (!isAuthorized) {
-    throw new ServerError(401, 'The password is not correct.');
+    throw new ServerError(400, 'The password is not correct.');
   }
 
   if (!found.isEmailConfirmed) {
     throw new ServerError(403, 'Please confirm your email.');
   }
 
+  const userInfo = { id: found.id, login: found.login, email: found.email };
+
   const { accessToken, refreshToken } = generateUserTokens(found);
 
   res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
-  res.json({ accessToken });
+  res.json({ accessToken, user: userInfo });
 };
 
 const refresh = async (req, res) => {
