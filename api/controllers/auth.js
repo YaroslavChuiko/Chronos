@@ -58,12 +58,10 @@ const login = async (req, res) => {
     throw new ServerError(403, 'Please confirm your email.');
   }
 
-  const userInfo = { id: found.id, login: found.login, email: found.email };
-
   const { accessToken, refreshToken } = generateUserTokens(found);
 
   res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
-  res.json({ accessToken, user: userInfo });
+  res.json({ accessToken });
 };
 
 const refresh = async (req, res) => {
