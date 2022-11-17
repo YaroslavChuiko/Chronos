@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { Link as ReactRouterLink } from 'react-router-dom';
-import { useLoginMutation } from '~/store/api/apiSlice';
+import { useLoginMutation } from '~/store/api/authSlice';
 import { loginSchema } from '~/validation/auth';
 
 const Login = () => {
