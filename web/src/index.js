@@ -5,10 +5,13 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from '~/store/store';
 import App from './App';
+import { apiSlice } from './store/api/apiSlice';
 
 import '~/styles/index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+store.dispatch(apiSlice.endpoints.refresh.initiate());
 
 root.render(
   <React.StrictMode>
@@ -19,5 +22,5 @@ root.render(
         </BrowserRouter>
       </ChakraProvider>
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
