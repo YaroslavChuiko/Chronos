@@ -1,15 +1,23 @@
-import { Alert, AlertIcon, Text } from '@chakra-ui/react';
+import { Alert, AlertDescription, AlertIcon, AlertTitle, Box } from '@chakra-ui/react';
 import Layout from '../Layout/Layout';
 import styles from './page-alert.styles';
 
-const PageAlert = ({ status, message, children }) => (
+const PageAlert = ({ status, title = null, message, children }) => (
   <Layout>
-    <Alert status={status} variant="top-accent" sx={styles.container}>
+    <Alert status={status} sx={styles.container}>
       <AlertIcon boxSize="40px" mr={0} />
-      <Text mt={4} mb={1} fontSize="3xl">
+
+      {title && (
+        <AlertTitle mt={6} mr={0} fontSize="2xl">
+          {title}
+        </AlertTitle>
+      )}
+
+      <AlertDescription mt={5} maxWidth="sm" fontSize="md">
         {message}
-      </Text>
-      {children && <div style={{ marginTop: 10 }}>{children}</div>}
+      </AlertDescription>
+
+      {children && <Box mt={7}>{children}</Box>}
     </Alert>
   </Layout>
 );
