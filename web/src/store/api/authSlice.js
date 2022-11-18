@@ -3,7 +3,7 @@ import { apiSlice } from './apiSlice';
 
 export const extendedApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    rigister: builder.mutation({
+    register: builder.mutation({
       query: ({ login, email, password }) => ({
         url: 'auth/register',
         method: 'POST',
@@ -52,4 +52,4 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useRigisterMutation, useLoginMutation } = extendedApiSlice;
+export const { useRegisterMutation, useLoginMutation } = extendedApiSlice;

@@ -1,12 +1,12 @@
 import { Button, FormControl, FormErrorMessage, FormLabel, Input, useToast, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { useRigisterMutation } from '~/store/api/authSlice';
+import { useRegisterMutation } from '~/store/api/authSlice';
 import { registerSchema } from '~/validation/auth';
 import s from './form.styles';
 
 const RegisterForm = () => {
-  const [register, { isLoading }] = useRigisterMutation();
+  const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
   const toast = useToast();
 
