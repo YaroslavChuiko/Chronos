@@ -5,10 +5,10 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    height: 300,
-    minWidth: 450,
+    height: "300px",
+    minWidth: "450px",
     width: "auto",
-    borderRadius: 20,
+    borderRadius: "20px",
   },
 };
 

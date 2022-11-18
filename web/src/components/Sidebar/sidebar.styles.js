@@ -1,12 +1,12 @@
 const styles = {
   sidebar: {
-    width: 300,
+    width: "300px",
     position: "fixed",
     top: 0,
     bottom: 0,
     left: 0,
     padding: "25px 20px",
-    borderRight: "1px #eee solid",
+    borderRightWidth: "1px",
   },
   container: {
     flexDirection: "column",
@@ -16,21 +16,20 @@ const styles = {
   },
   user: {
     width: "100%",
-    marginTop: 30,
+    marginTop: "30px",
     alignItems: "center",
-    background: "#eee",
     position: "absolute",
-    padding: 10,
+    padding: "10px",
     bottom: 0,
     left: 0,
     right: 0,
   },
   btn: {
-    width: 200,
+    width: "200px",
     color: "white",
   },
   userLogin: {
-    marginLeft: 10,
+    marginLeft: "10px",
     fontWeight: "bolder",
   },
 };

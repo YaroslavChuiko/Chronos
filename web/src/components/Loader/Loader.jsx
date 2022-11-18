@@ -4,7 +4,7 @@ import Layout from "../Layout/Layout";
 const Loader = () => (
   <Layout>
     <Spinner
-      css={{ width: 100, height: 100 }}
+      sx={{ width: 100, height: 100 }}
       speed=".6s"
       thickness={4}
       color="yellow.400"

@@ -6,7 +6,7 @@ const styles = {
     maxHeight: "100vh",
     width: "100%",
     flexDirection: "column",
-    marginLeft: 340,
+    marginLeft: "340px",
   },
 };
 

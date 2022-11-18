@@ -12,11 +12,11 @@ const MyCalendars = () => {
 
   return (
     <VStack
-      css={styles.calendars}
+      sx={styles.calendars}
       spacing={4}
       divider={<StackDivider borderColor="gray.200" />}
     >
-      <Flex css={styles.subContainer}>
+      <Flex sx={styles.subContainer}>
         <Text fontSize="xl">{labels.my}</Text>
         {calendars.map((c) => (
           <Checkbox
@@ -24,20 +24,20 @@ const MyCalendars = () => {
             spacing="1rem"
             size="lg"
             defaultChecked={!c.hidden}
-            css={styles.checkbox}
+            sx={styles.checkbox}
             colorScheme="yellow"
           >
             {c.name}
           </Checkbox>
         ))}
       </Flex>
-      <Flex css={styles.subContainer}>
+      <Flex sx={styles.subContainer}>
         <Text fontSize="xl">{labels.other}</Text>
         <Checkbox
           spacing="1rem"
           size="lg"
           defaultChecked={!holidays.hidden}
-          css={styles.checkbox}
+          sx={styles.checkbox}
           colorScheme="green"
         >
           {holidays.name}

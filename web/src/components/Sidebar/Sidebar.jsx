@@ -7,17 +7,17 @@ const Sidebar = () => {
   const { user } = useSelector((state) => state.auth);
 
   return (
-    <Flex css={styles.sidebar}>
-      <Flex css={styles.container}>
+    <Flex sx={styles.sidebar} borderColor="gray.200">
+      <Flex sx={styles.container}>
         <Flex>
-          <Button css={styles.btn} bg="yellow.400" size="lg">
+          <Button sx={styles.btn} bg="yellow.400" size="lg">
             Create an event
           </Button>
         </Flex>
         <MyCalendars />
-        <Flex css={styles.user}>
+        <Flex sx={styles.user} bgColor="gray.100">
           <Avatar name={user.login} bg="yellow.400" />
-          <Text size="lg" css={styles.userLogin}>
+          <Text size="lg" sx={styles.userLogin}>
             {user.login}
           </Text>
         </Flex>

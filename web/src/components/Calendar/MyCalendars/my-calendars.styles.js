@@ -6,12 +6,12 @@ const base = {
 
 const styles = {
   checkbox: {
-    marginTop: 20,
+    marginTop: "20px",
   },
   calendars: {
     ...base,
     maxHeight: "80%",
-    marginTop: 30,
+    marginTop: "30px",
     overflow: "auto",
   },
   subContainer: {

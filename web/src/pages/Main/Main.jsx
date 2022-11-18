@@ -8,9 +8,9 @@ import "~/styles/full-calendar.css";
 
 const CalendarPage = () => {
   return (
-    <Flex css={styles.container}>
+    <Flex sx={styles.container}>
       <Sidebar />
-      <Flex css={styles.calendar}>
+      <Flex sx={styles.calendar}>
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView={OPTIONS.initialView}
