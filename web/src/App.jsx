@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import NotFound from './pages/NotFound/NotFound';
 import { useRefreshMutation } from './store/api/authSlice';
 import Loader from './components/Loader/Loader';
+import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
 
 const App = () => {
   const { user } = useSelector((state) => state.auth);
@@ -31,6 +32,7 @@ const App = () => {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/confirm-email" element={<ConfirmEmail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
