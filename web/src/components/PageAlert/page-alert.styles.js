@@ -5,10 +5,11 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    height: '300px',
-    minWidth: '450px',
-    width: 'auto',
-    borderRadius: '20px',
+    minHeight: '250px',
+    maxWidth: '500px',
+    width: '100%',
+    borderRadius: '10px',
+    padding: '30px 20px',
   },
 };
 
