@@ -11,8 +11,12 @@ const ProtectedRoute = () => {
   }
 
   return (
-    <PageAlert status="error" message="You cannot access this page.">
-      <Button color="white" bgColor="red.500" as={RouterLink} to="/login">
+    <PageAlert
+      status="warning"
+      title="403 - Access denied!"
+      message="You don't have permission to access this page."
+    >
+      <Button colorScheme="orange" as={RouterLink} to="/login">
         Login
       </Button>
     </PageAlert>
