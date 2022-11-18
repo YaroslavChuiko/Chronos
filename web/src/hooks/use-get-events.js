@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useGetCalendarEventsQuery } from '~/store/api/apiSlice';
 import { toDate } from '~/utils/date';
 
-const useGetEvents = ({ calendarIDs }) => {
+const useGetEvents = ({ calendars, types }) => {
   const [events, setEvents] = useState([]);
-  const { data, error } = useGetCalendarEventsQuery(calendarIDs);
+  const { data, error } = useGetCalendarEventsQuery({ calendars, types });
 
   useEffect(() => {
     if (data) {

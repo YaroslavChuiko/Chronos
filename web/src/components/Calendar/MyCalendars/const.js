@@ -1,9 +1,16 @@
-const initialValues = (calendars) => {
-  const initial = {};
-  calendars.forEach((c) => {
-    initial[c.id] = c.name === 'Main Calendar';
-  });
-  return initial;
+const initialCalendars = (calendars) =>
+  calendars.reduce(
+    (prev, curr) => ({
+      ...prev,
+      [curr.id]: curr.name === 'Main Calendar',
+    }),
+    {},
+  );
+
+const initialTypes = {
+  arrangement: true,
+  reminder: true,
+  task: true,
 };
 
-export default initialValues;
+export { initialCalendars, initialTypes };

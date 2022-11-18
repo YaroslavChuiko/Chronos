@@ -23,7 +23,10 @@ const CalendarPage = () => {
   });
   const { data, isLoading, error } = useGetCalendarsQuery();
   const { holidays, hError, hLoading } = useGetHolidays({ hidden: !filter.holidays });
-  const { events, eError } = useGetEvents({ calendarIDs: filter.calendars });
+  const { events, eError } = useGetEvents({
+    calendars: filter.calendars,
+    types: filter.types,
+  });
 
   useEffect(() => {
     if (data) {

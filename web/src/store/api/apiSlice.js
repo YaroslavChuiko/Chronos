@@ -12,10 +12,11 @@ export const apiSlice = createApi({
       query: () => `/calendars/holidays`,
     }),
     getCalendarEvents: builder.query({
-      query: (calendars) => ({
+      query: ({ calendars, types }) => ({
         url: `/events`,
         params: {
           ...(calendars.length && { calendars: calendars.join(',') }),
+          ...(types.length && { types: types.join(',') }),
         },
       }),
     }),

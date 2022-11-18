@@ -1,15 +1,16 @@
 import { Checkbox, Flex, StackDivider, Text, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
-import { CALENDAR_LABELS as labels, holidays } from '~/consts/calendar';
-import initial from './const';
+import { CALENDAR_SECTIONS, CALENDAR_FILTER } from '~/consts/calendar';
+import { initialCalendars, initialTypes } from './const';
 import styles from './my-calendars.styles';
 
 const MyCalendars = ({ calendars, setFilter }) => {
   const { values, handleChange } = useFormik({
     initialValues: {
-      calendars: initial(calendars),
+      calendars: initialCalendars(calendars),
       holidays: true,
+      types: initialTypes,
     },
   });
 
@@ -19,13 +20,16 @@ const MyCalendars = ({ calendars, setFilter }) => {
         .filter(([_, v]) => v)
         .map(([k]) => k),
       holidays: values.holidays,
+      types: Object.entries(values.types)
+        .filter(([_, v]) => v)
+        .map(([k]) => k),
     });
   }, [values, setFilter]);
 
   return (
     <VStack sx={styles.calendars} spacing={4} divider={<StackDivider borderColor="gray.200" />}>
       <Flex sx={styles.subContainer}>
-        <Text fontSize="xl">{labels.my}</Text>
+        <Text fontSize="xl">{CALENDAR_SECTIONS.my}</Text>
         {calendars.map((c) => (
           <Checkbox
             name={`calendars.${c.id}`}
@@ -43,7 +47,7 @@ const MyCalendars = ({ calendars, setFilter }) => {
         ))}
       </Flex>
       <Flex sx={styles.subContainer}>
-        <Text fontSize="xl">{labels.other}</Text>
+        <Text fontSize="xl">{CALENDAR_SECTIONS.other}</Text>
         <Checkbox
           name="holidays"
           value={values.holidays}
@@ -54,8 +58,26 @@ const MyCalendars = ({ calendars, setFilter }) => {
           colorScheme="green"
           onChange={handleChange}
         >
-          {holidays.name}
+          {CALENDAR_FILTER.holidays}
         </Checkbox>
+      </Flex>
+      <Flex sx={styles.subContainer}>
+        <Text fontSize="xl">{CALENDAR_SECTIONS.types}</Text>
+        {CALENDAR_FILTER.types.map((t) => (
+          <Checkbox
+            name={`types.${t.id}`}
+            value={values.types[t.id]}
+            key={t.id}
+            spacing="1rem"
+            size="lg"
+            defaultChecked={values.types[t.id]}
+            sx={styles.checkbox}
+            colorScheme="green"
+            onChange={handleChange}
+          >
+            {t.name}
+          </Checkbox>
+        ))}
       </Flex>
     </VStack>
   );
