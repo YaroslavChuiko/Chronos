@@ -8,12 +8,14 @@ const useGetHolidays = ({ hidden }) => {
 
   useEffect(() => {
     if (!hidden) {
-      getHolidays();
+      !data && getHolidays();
+    } else {
+      setHolidays([]);
     }
-  }, [hidden, getHolidays]);
+  }, [hidden, getHolidays, data]);
 
   useEffect(() => {
-    if (data) {
+    if (data && !hidden) {
       const response = data.map((h) => ({
         title: h.name,
         start: getHolidayDate(h.startAt),
@@ -21,7 +23,7 @@ const useGetHolidays = ({ hidden }) => {
       }));
       setHolidays(response);
     }
-  }, [data]);
+  }, [data, hidden]);
 
   return { holidays, hLoading: isLoading, hError: error };
 };

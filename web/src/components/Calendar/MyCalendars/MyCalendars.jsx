@@ -5,20 +5,22 @@ import { CALENDAR_LABELS as labels, holidays } from '~/consts/calendar';
 import initial from './const';
 import styles from './my-calendars.styles';
 
-const MyCalendars = ({ calendars, setCalendarIDs }) => {
+const MyCalendars = ({ calendars, setFilter }) => {
   const { values, handleChange } = useFormik({
     initialValues: {
-      ...initial(calendars),
+      calendars: initial(calendars),
+      holidays: true,
     },
   });
 
   useEffect(() => {
-    setCalendarIDs(
-      Object.entries(values)
+    setFilter({
+      calendars: Object.entries(values.calendars)
         .filter(([_, v]) => v)
         .map(([k]) => k),
-    );
-  }, [values, setCalendarIDs]);
+      holidays: values.holidays,
+    });
+  }, [values, setFilter]);
 
   return (
     <VStack sx={styles.calendars} spacing={4} divider={<StackDivider borderColor="gray.200" />}>
@@ -26,12 +28,12 @@ const MyCalendars = ({ calendars, setCalendarIDs }) => {
         <Text fontSize="xl">{labels.my}</Text>
         {calendars.map((c) => (
           <Checkbox
-            name={c.id}
-            value={values[c.id]}
+            name={`calendars.${c.id}`}
+            value={values.calendars[c.id]}
             key={c.id}
             spacing="1rem"
             size="lg"
-            defaultChecked={values[c.id]}
+            defaultChecked={values.calendars[c.id]}
             sx={styles.checkbox}
             colorScheme="yellow"
             onChange={handleChange}
@@ -43,11 +45,14 @@ const MyCalendars = ({ calendars, setCalendarIDs }) => {
       <Flex sx={styles.subContainer}>
         <Text fontSize="xl">{labels.other}</Text>
         <Checkbox
+          name="holidays"
+          value={values.holidays}
           spacing="1rem"
           size="lg"
-          defaultChecked={!holidays.hidden}
+          defaultChecked={values.holidays}
           sx={styles.checkbox}
           colorScheme="green"
+          onChange={handleChange}
         >
           {holidays.name}
         </Checkbox>

@@ -15,7 +15,7 @@ export const apiSlice = createApi({
       query: (calendars) => ({
         url: `/events`,
         params: {
-          calendars: !calendars.length ? '' : calendars.join(','),
+          ...(calendars.length && { calendars: calendars.join(',') }),
         },
       }),
     }),

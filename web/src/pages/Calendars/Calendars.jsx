@@ -15,11 +15,15 @@ import useGetEvents from '~/hooks/use-get-events';
 
 const CalendarPage = () => {
   const [calendars, setCalendars] = useState([]);
-  const [calendarIDs, setCalendarIDs] = useState([]);
   const [eventData, setEventData] = useState([]);
+  const [filter, setFilter] = useState({
+    calendars: [],
+    types: [],
+    holidays: true,
+  });
   const { data, isLoading, error } = useGetCalendarsQuery();
-  const { holidays, hError, hLoading } = useGetHolidays({ hidden: false });
-  const { events, eError } = useGetEvents({ calendarIDs });
+  const { holidays, hError, hLoading } = useGetHolidays({ hidden: !filter.holidays });
+  const { events, eError } = useGetEvents({ calendarIDs: filter.calendars });
 
   useEffect(() => {
     if (data) {
@@ -49,7 +53,7 @@ const CalendarPage = () => {
 
   return (
     <Flex sx={styles.container}>
-      <Sidebar setCalendarIDs={setCalendarIDs} calendars={calendars} />
+      <Sidebar setFilter={setFilter} calendars={calendars} />
       <Flex sx={styles.calendar}>
         <FullCalendar
           plugins={[dayGridPlugin]}
