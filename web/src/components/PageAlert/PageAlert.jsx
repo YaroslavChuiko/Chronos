@@ -1,6 +1,6 @@
-import { Alert, AlertIcon, Text } from "@chakra-ui/react";
-import Layout from "../Layout/Layout";
-import styles from "./page-alert.styles";
+import { Alert, AlertIcon, Text } from '@chakra-ui/react';
+import Layout from '../Layout/Layout';
+import styles from './page-alert.styles';
 
 const PageAlert = ({ status, message, children }) => (
   <Layout>

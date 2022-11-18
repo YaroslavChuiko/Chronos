@@ -1,7 +1,7 @@
-import { Button } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
-import { Link as RouterLink, Outlet } from "react-router-dom";
-import PageAlert from "../PageAlert/PageAlert";
+import { Button } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import { Link as RouterLink, Outlet } from 'react-router-dom';
+import PageAlert from '../PageAlert/PageAlert';
 
 const ProtectedRoute = () => {
   const { user } = useSelector((state) => state.auth);

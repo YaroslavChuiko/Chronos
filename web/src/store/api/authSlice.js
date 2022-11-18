@@ -52,4 +52,4 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = extendedApiSlice;
+export const { useRegisterMutation, useLoginMutation, useRefreshMutation } = extendedApiSlice;

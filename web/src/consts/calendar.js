@@ -1,16 +1,16 @@
 export const CALENDAR_OPTIONS = {
   toolbar: {
-    center: "dayGridDay,dayGridWeek,dayGridMonth",
+    center: 'dayGridDay,dayGridWeek,dayGridMonth',
   },
-  initialView: "dayGridMonth",
+  initialView: 'dayGridMonth',
 };
 
 export const CALENDAR_LABELS = {
-  my: "My Calendars",
-  other: "Other Calendars",
+  my: 'My Calendars',
+  other: 'Other Calendars',
 };
 
 export const holidays = {
-  name: "Holidays",
+  name: 'Holidays',
   hidden: false,
 };

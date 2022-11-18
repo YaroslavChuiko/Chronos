@@ -1,8 +1,8 @@
 const styles = {
   page: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
   },
 };
 

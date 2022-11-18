@@ -1,7 +1,7 @@
-import { Avatar, Button, Flex, Text } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
-import MyCalendars from "~/components/Calendar/MyCalendars/MyCalendars";
-import styles from "./sidebar.styles.js";
+import { Avatar, Button, Flex, Text } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import MyCalendars from '~/components/Calendar/MyCalendars/MyCalendars';
+import styles from './sidebar.styles.js';
 
 const Sidebar = () => {
   const { user } = useSelector((state) => state.auth);
