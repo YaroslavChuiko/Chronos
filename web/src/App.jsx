@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
-import CalendarPage from './pages/Main/Main';
+import CalendarPage from './pages/Calendars/Calendars';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import NotFound from './pages/NotFound/NotFound';
 import { useRefreshMutation } from './store/api/authSlice';
-import { useSelector } from 'react-redux';
 import Loader from './components/Loader/Loader';
 
 const App = () => {
