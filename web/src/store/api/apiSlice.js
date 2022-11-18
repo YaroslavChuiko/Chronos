@@ -8,7 +8,10 @@ export const apiSlice = createApi({
     getCalendars: builder.query({
       query: () => `/calendars`,
     }),
+    getHolidays: builder.query({
+      query: () => `/calendars/holidays`,
+    }),
   }),
 });
 
-export const { useGetCalendarsQuery } = apiSlice;
+export const { useGetCalendarsQuery, useLazyGetHolidaysQuery } = apiSlice;
