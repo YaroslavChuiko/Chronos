@@ -1,9 +1,4 @@
 const styles = {
-  page: {
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100vh",
-  },
   container: {
     display: "flex",
     flexDirection: "column",
