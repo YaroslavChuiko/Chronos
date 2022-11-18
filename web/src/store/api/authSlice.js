@@ -49,7 +49,18 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
         } catch (error) {}
       },
     }),
+    confirmEmail: builder.mutation({
+      query: ({ confirmToken }) => ({
+        url: `auth/confirm-email/${confirmToken}`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useRefreshMutation } = extendedApiSlice;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useRefreshMutation,
+  useConfirmEmailMutation,
+} = extendedApiSlice;
