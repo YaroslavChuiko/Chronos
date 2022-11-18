@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import MyCalendars from '~/components/Calendar/MyCalendars/MyCalendars';
 import styles from './sidebar.styles.js';
 
-const Sidebar = ({ calendars }) => {
+const Sidebar = ({ calendars, setCalendarIDs }) => {
   const { user } = useSelector((state) => state.auth);
 
   return (
@@ -14,7 +14,7 @@ const Sidebar = ({ calendars }) => {
             Create an event
           </Button>
         </Flex>
-        <MyCalendars calendars={calendars} />
+        <MyCalendars setCalendarIDs={setCalendarIDs} calendars={calendars} />
         <Flex sx={styles.user} bgColor="gray.100">
           <Avatar name={user.login} bg="yellow.400" />
           <Text size="lg" sx={styles.userLogin}>

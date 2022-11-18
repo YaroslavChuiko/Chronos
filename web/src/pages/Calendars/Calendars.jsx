@@ -11,11 +11,15 @@ import Loader from '~/components/Loader/Loader';
 import PageAlert from '~/components/PageAlert/PageAlert';
 import useGetHolidays from '~/hooks/use-get-holidays';
 import { colors } from '~/consts/theme';
+import useGetEvents from '~/hooks/use-get-events';
 
 const CalendarPage = () => {
   const [calendars, setCalendars] = useState([]);
+  const [calendarIDs, setCalendarIDs] = useState([]);
+  const [eventData, setEventData] = useState([]);
   const { data, isLoading, error } = useGetCalendarsQuery();
   const { holidays, hError, hLoading } = useGetHolidays({ hidden: false });
+  const { events, eError } = useGetEvents({ calendarIDs });
 
   useEffect(() => {
     if (data) {
@@ -23,26 +27,35 @@ const CalendarPage = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    setEventData([...events, ...holidays]);
+  }, [events, holidays]);
+
+  const Error = ({ err }) => <PageAlert status="error" message={err.data.message} />;
+
   if (error) {
-    return <PageAlert status="error" message={error.data.message} />;
+    return <Error err={error} />;
   }
   if (hError) {
-    return <PageAlert status="error" message={hError.data.message} />;
+    return <Error err={hError} />;
+  }
+  if (eError) {
+    return <Error err={eError} />;
   }
 
-  if (isLoading || !calendars.length || hLoading || !holidays.length) {
+  if (isLoading || !calendars.length || hLoading) {
     return <Loader />;
   }
 
   return (
     <Flex sx={styles.container}>
-      <Sidebar calendars={calendars} />
+      <Sidebar setCalendarIDs={setCalendarIDs} calendars={calendars} />
       <Flex sx={styles.calendar}>
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView={OPTIONS.initialView}
           headerToolbar={OPTIONS.toolbar}
-          events={holidays}
+          events={eventData}
           eventBackgroundColor={colors.yellow[400]}
           eventBorderColor={colors.yellow[400]}
         />

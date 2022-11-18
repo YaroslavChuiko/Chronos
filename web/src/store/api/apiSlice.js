@@ -11,7 +11,16 @@ export const apiSlice = createApi({
     getHolidays: builder.query({
       query: () => `/calendars/holidays`,
     }),
+    getCalendarEvents: builder.query({
+      query: (calendars) => ({
+        url: `/events`,
+        params: {
+          calendars: !calendars.length ? '' : calendars.join(','),
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetCalendarsQuery, useLazyGetHolidaysQuery } = apiSlice;
+export const { useGetCalendarsQuery, useLazyGetHolidaysQuery, useGetCalendarEventsQuery } =
+  apiSlice;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLazyGetHolidaysQuery } from '~/store/api/apiSlice';
-import { getDate } from '~/utils/date';
+import { getHolidayDate } from '~/utils/date';
 
 const useGetHolidays = ({ hidden }) => {
   const [holidays, setHolidays] = useState([]);
@@ -16,8 +16,8 @@ const useGetHolidays = ({ hidden }) => {
     if (data) {
       const response = data.map((h) => ({
         title: h.name,
-        start: getDate(h.startAt),
-        end: getDate(h.startAt),
+        start: getHolidayDate(h.startAt),
+        end: getHolidayDate(h.startAt),
       }));
       setHolidays(response);
     }
