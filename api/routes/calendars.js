@@ -13,14 +13,14 @@ const {
 const authenticate = require('~/middleware/auth');
 const boundary = require('~/helpers/error-boundary');
 const validate = require('~/helpers/validation');
-const { createSchema, updateSchema, shareSchema, filterSchema } = require('~/validation/calendar');
+const { createSchema, updateSchema, shareSchema } = require('~/validation/calendar');
 const eventRouter = require('~/routes/event');
 
 const router = express.Router();
 
 router.use(authenticate);
 
-router.get('/', validate(filterSchema), boundary(getCalendars));
+router.get('/', boundary(getCalendars));
 router.get('/holidays', boundary(getHolidays));
 router.post('/', validate(createSchema), boundary(createCalendar));
 
