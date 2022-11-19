@@ -19,6 +19,7 @@ const styles = {
     marginTop: '30px',
     alignItems: 'center',
     position: 'absolute',
+    justifyContent: 'space-between',
     padding: '10px',
     bottom: 0,
     left: 0,

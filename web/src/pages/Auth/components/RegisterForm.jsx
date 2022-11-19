@@ -1,6 +1,7 @@
-import { Button, FormControl, FormErrorMessage, FormLabel, Input, useToast, VStack } from '@chakra-ui/react';
+import { Button, FormControl, FormErrorMessage, FormLabel, Input, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
+import useCustomToast from '~/hooks/use-custom-toast';
 import { useRegisterMutation } from '~/store/api/authSlice';
 import { registerSchema } from '~/validation/auth';
 import s from './form.styles';
@@ -8,12 +9,7 @@ import s from './form.styles';
 const RegisterForm = () => {
   const [register, { isLoading }] = useRegisterMutation();
   const navigate = useNavigate();
-  const toast = useToast();
-
-  const toastConfig = {
-    duration: 9000,
-    isClosable: true,
-  };
+  const { toast } = useCustomToast();
 
   const initialValues = {
     login: '',
@@ -25,18 +21,10 @@ const RegisterForm = () => {
   const onSubmit = async (values) => {
     try {
       await register(values).unwrap();
-      toast({
-        description: 'You are successfully registered',
-        status: 'success',
-        ...toastConfig,
-      });
+      toast('You are successfully registered', 'success');
       navigate('/login');
     } catch (error) {
-      toast({
-        description: error.data.message,
-        status: 'error',
-        ...toastConfig,
-      });
+      toast(error.data.message, 'error');
     }
   };
 

@@ -11,16 +11,16 @@ import Loader from './components/Loader/Loader';
 import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
 
 const App = () => {
-  const { user } = useSelector((state) => state.auth);
+  const { user, accessToken } = useSelector((state) => state.auth);
   const [refresh, { isLoading, error }] = useRefreshMutation();
 
   useEffect(() => {
-    if (!user.id) {
+    if (!user.id && accessToken) {
       refresh();
     }
-  }, [refresh, user.id]);
+  }, [refresh, user.id, accessToken]);
 
-  if (isLoading || (!user.id && !error)) {
+  if (isLoading || (!user.id && !error && accessToken)) {
     return <Loader />;
   }
 

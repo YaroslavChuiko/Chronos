@@ -1,7 +1,8 @@
-import { Button, FormControl, FormErrorMessage, FormLabel, Input, useToast, VStack } from '@chakra-ui/react';
+import { Button, FormControl, FormErrorMessage, FormLabel, Input, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import useCustomToast from '~/hooks/use-custom-toast';
 import { useLoginMutation } from '~/store/api/authSlice';
 import { loginSchema } from '~/validation/auth';
 import s from './form.styles';
@@ -9,7 +10,7 @@ import s from './form.styles';
 const LoginForm = () => {
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
-  const toast = useToast();
+  const { toast } = useCustomToast();
 
   const initialValues = {
     login: '',
@@ -21,12 +22,7 @@ const LoginForm = () => {
       await login(values).unwrap();
       navigate('/');
     } catch (error) {
-      toast({
-        description: error.data.message,
-        duration: 9000,
-        isClosable: true,
-        status: 'error',
-      });
+      toast(error.data.message, 'error');
     }
   };
 
