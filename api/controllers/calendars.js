@@ -2,7 +2,7 @@ const requestIP = require('request-ip');
 const { DEFAULT_HOLIDAY } = require('~/consts/default');
 const templates = require('~/consts/email');
 const { ROLES } = require('~/consts/validation');
-const { checkCalendarAction } = require('~/helpers/action-checks');
+const { checkCalendarAction, checkCalendarName } = require('~/helpers/action-checks');
 const { getHolidaysByIP } = require('~/helpers/holiday-api');
 const ServerError = require('~/helpers/server-error');
 const { calendar, user, userCalendars } = require('~/lib/prisma');
@@ -48,6 +48,8 @@ const createCalendar = async (req, res) => {
   const data = req.body;
   const { id } = req.user;
 
+  checkCalendarName(data.name);
+
   const newCalendar = await calendar.create({
     data: {
       ...data,
@@ -71,6 +73,7 @@ const updateCalendar = async (req, res) => {
   const userId = req.user.id;
 
   await checkCalendarAction(calendarId, userId, [ROLES.admin]);
+  checkCalendarName(data.name);
 
   const updatedCalendar = await calendar.update({
     where: { id: calendarId, create: { users: { some: { id: userId } } } },
