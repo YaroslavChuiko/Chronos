@@ -21,7 +21,7 @@ const CalendarPage = () => {
     types: [],
     holidays: true,
   });
-  const { data, isLoading, error } = useGetCalendarsQuery();
+  const { data, isLoading, error: cError } = useGetCalendarsQuery();
   const { holidays, hError, hLoading } = useGetHolidays({ hidden: !filter.holidays });
   const { events, eError } = useGetEvents({
     calendars: filter.calendars,
@@ -38,16 +38,9 @@ const CalendarPage = () => {
     setEventData([...events, ...holidays]);
   }, [events, holidays]);
 
-  const Error = ({ err }) => <PageAlert status="error" message={err.data.message} />;
-
+  const error = cError || hError || eError;
   if (error) {
-    return <Error err={error} />;
-  }
-  if (hError) {
-    return <Error err={hError} />;
-  }
-  if (eError) {
-    return <Error err={eError} />;
+    return <PageAlert status="error" message={error.data.message} />;
   }
 
   if (isLoading || !calendars.length || hLoading) {
