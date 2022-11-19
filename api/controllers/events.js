@@ -7,28 +7,53 @@ const { Token, Email, Factory } = require('~/services');
 const { getEventFilters } = require('~/helpers/filtering');
 
 const getCalendarEvents = async (req, res) => {
-  const calendarId = Number(req.params.id);
   const userId = req.user.id;
 
-  const filters = getEventFilters(req.query);
+  const split = (str, mapTo) => (str && str.split(',').map(mapTo)) || [];
 
-  await checkCalendarAction(calendarId, userId, Object.values(ROLES));
+  const { calendars, types } = req.query;
+  const calendarIDs = split(calendars, Number);
+  const typesArr = split(types, String);
 
-  const events = await Factory.findMany(
-    event,
-    {
+  await Promise.all(
+    calendarIDs.map((id) => {
+      return checkCalendarAction(id, userId, Object.values(ROLES));
+    }),
+  );
+
+  const filters = getEventFilters({
+    types: typesArr,
+    calendars: calendarIDs,
+  });
+
+  const events = await event.findMany({
+    where: {
       users: {
         some: { user: { id: userId } },
       },
-      calendars: {
-        some: { calendar: { id: calendarId } },
-      },
       ...filters,
     },
-    null,
+    include: {
+      calendars: {
+        where: {
+          calendarId: { in: calendarIDs },
+        },
+      },
+    },
+  });
+
+  const result = events.reduce(
+    (prev, { calendars, ...curr }) => [
+      ...prev,
+      {
+        ...curr,
+        calendarId: calendars[0].calendarId,
+      },
+    ],
+    [],
   );
 
-  res.json(events);
+  res.json(result);
 };
 
 const createEvent = async (req, res) => {
