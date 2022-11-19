@@ -57,10 +57,10 @@ CREATE TABLE `CalendarEvents` (
 CREATE TABLE `Event` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `color` VARCHAR(255) NULL DEFAULT '#fff',
+    `color` VARCHAR(255) NULL DEFAULT '#ECC94B',
     `content` TEXT NOT NULL,
-    `startAt` TIMESTAMP(0) NOT NULL,
-    `endAt` TIMESTAMP(0) NOT NULL,
+    `start` TIMESTAMP(0) NOT NULL,
+    `end` TIMESTAMP(0) NOT NULL,
     `type` ENUM('arrangement', 'reminder', 'task') NOT NULL,
     `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 

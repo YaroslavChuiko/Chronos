@@ -5,12 +5,15 @@ const DEFAULT_CALENDAR = {
   description: 'This is your main calendar.',
 };
 
+const DEFAULT_COLOR = '#ECC94B';
+
 const DEFAULT_HOLIDAY = ({ name, date }) => ({
-  color: '#fff',
+  color: DEFAULT_COLOR,
   content: '',
   type: HOLIDAY_TYPE,
   name,
-  startAt: date,
+  start: date,
+  end: date,
 });
 
 const SEVEN_DAYS = 604800000;
@@ -23,4 +26,4 @@ const COOKIE_OPTIONS = {
   domain: 'localhost',
 };
 
-module.exports = { DEFAULT_CALENDAR, DEFAULT_HOLIDAY, COOKIE_OPTIONS };
+module.exports = { DEFAULT_CALENDAR, DEFAULT_HOLIDAY, COOKIE_OPTIONS, DEFAULT_COLOR };

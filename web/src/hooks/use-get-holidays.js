@@ -16,10 +16,11 @@ const useGetHolidays = ({ hidden }) => {
 
   useEffect(() => {
     if (data && !hidden) {
-      const response = data.map((h) => ({
-        title: h.name,
-        start: getHolidayDate(h.startAt),
-        end: getHolidayDate(h.startAt),
+      const response = data.map(({ name, start, end, ...h }) => ({
+        title: name,
+        start: getHolidayDate(start),
+        end: getHolidayDate(end),
+        ...h,
       }));
       setHolidays(response);
     }

@@ -8,10 +8,10 @@ const useGetEvents = ({ calendars, types }) => {
 
   useEffect(() => {
     if (data) {
-      const response = data.map(({ name, startAt, endAt, ...e }) => ({
+      const response = data.map(({ name, start, end, ...e }) => ({
         title: name,
-        start: toDate(startAt),
-        end: toDate(endAt),
+        start: toDate(start),
+        end: toDate(end),
         ...e,
       }));
       setEvents(response);

@@ -7,22 +7,19 @@ const events = require('./events');
 const prisma = new PrismaClient();
 
 async function main() {
-  await Promise.all(
-    users.map((data) =>
-      prisma.user.create({
-        data: {
-          ...data,
-          calendars: {
-            create: {
-              role: ROLES.moderator,
-              calendar: { create: DEFAULT_CALENDAR },
-            },
+  for (const user of users) {
+    await prisma.user.create({
+      data: {
+        ...user,
+        calendars: {
+          create: {
+            role: ROLES.moderator,
+            calendar: { create: { ...DEFAULT_CALENDAR } },
           },
         },
-      }),
-    ),
-  );
-
+      },
+    });
+  }
   await Promise.all(
     events.map(({ userId, calendarId, ...data }) =>
       prisma.event.create({
