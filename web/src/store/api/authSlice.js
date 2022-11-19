@@ -62,5 +62,6 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useRefreshMutation,
+  useLogoutMutation,
   useConfirmEmailMutation,
 } = extendedApiSlice;

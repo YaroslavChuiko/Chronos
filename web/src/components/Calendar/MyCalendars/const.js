@@ -1,8 +1,10 @@
+import { IS_MAIN } from '~/consts/calendar';
+
 const initialCalendars = (calendars) =>
   calendars.reduce(
     (prev, curr) => ({
       ...prev,
-      [curr.id]: curr.name === 'Main Calendar',
+      [curr.id]: IS_MAIN(curr.name),
     }),
     {},
   );

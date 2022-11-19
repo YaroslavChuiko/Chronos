@@ -22,3 +22,5 @@ export const CALENDAR_FILTER = {
     { id: 'reminder', name: 'Reminders' },
   ],
 };
+
+export const IS_MAIN = (name) => name === 'Main Calendar';

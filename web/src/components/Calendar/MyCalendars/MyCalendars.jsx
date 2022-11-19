@@ -1,7 +1,7 @@
 import { Checkbox, Flex, StackDivider, Text, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
-import { CALENDAR_SECTIONS, CALENDAR_FILTER } from '~/consts/calendar';
+import { CALENDAR_SECTIONS, CALENDAR_FILTER, IS_MAIN } from '~/consts/calendar';
 import { initialCalendars, initialTypes } from './const';
 import styles from './my-calendars.styles';
 
@@ -37,6 +37,7 @@ const MyCalendars = ({ calendars, setFilter }) => {
             key={c.id}
             spacing="1rem"
             size="lg"
+            disabled={IS_MAIN(c.name)}
             defaultChecked={values.calendars[c.id]}
             sx={styles.checkbox}
             colorScheme="yellow"
