@@ -1,7 +1,8 @@
 import { Checkbox, Flex, StackDivider, Text, VStack } from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
-import { CALENDAR_SECTIONS, CALENDAR_FILTER, IS_MAIN } from '~/consts/calendar';
+import { CALENDAR_SECTIONS, CALENDAR_FILTER } from '~/consts/calendar';
+import CalendarItem from '../CalendarItem/CalendarItem';
 import { initialCalendars, initialTypes } from './const';
 import styles from './my-calendars.styles';
 
@@ -31,20 +32,14 @@ const MyCalendars = ({ calendars, setFilter }) => {
       <Flex sx={styles.subContainer}>
         <Text fontSize="xl">{CALENDAR_SECTIONS.my}</Text>
         {calendars.map((c) => (
-          <Checkbox
-            name={`calendars.${c.id}`}
-            value={values.calendars[c.id]}
+          <CalendarItem
             key={c.id}
-            spacing="1rem"
-            size="lg"
-            disabled={IS_MAIN(c.name)}
-            defaultChecked={values.calendars[c.id]}
-            sx={styles.checkbox}
-            colorScheme="yellow"
-            onChange={handleChange}
-          >
-            {c.name}
-          </Checkbox>
+            calendar={c}
+            formik={{
+              handleChange,
+              values,
+            }}
+          />
         ))}
       </Flex>
       <Flex sx={styles.subContainer}>

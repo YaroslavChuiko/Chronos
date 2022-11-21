@@ -24,3 +24,4 @@ export const CALENDAR_FILTER = {
 };
 
 export const IS_MAIN = (name) => name === 'Main Calendar';
+export const HAS_ADMIN_RIGHTS = (role) => role === 'admin';
