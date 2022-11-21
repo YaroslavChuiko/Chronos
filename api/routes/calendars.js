@@ -15,12 +15,13 @@ const boundary = require('~/helpers/error-boundary');
 const validate = require('~/helpers/validation');
 const { createSchema, updateSchema, shareSchema } = require('~/validation/calendar');
 const eventRouter = require('~/routes/event');
+const { calendarSchema } = require('~/validation/query');
 
 const router = express.Router();
 
 router.use(authenticate);
 
-router.get('/', boundary(getCalendars));
+router.get('/', validate(calendarSchema, 'query'), boundary(getCalendars));
 router.get('/holidays', boundary(getHolidays));
 router.post('/', validate(createSchema), boundary(createCalendar));
 

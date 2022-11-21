@@ -7,4 +7,8 @@ const eventSchema = Joi.object().keys({
   calendars: Joi.string().allow(''),
 });
 
-module.exports = { eventSchema };
+const calendarSchema = Joi.object().keys({
+  roles: Joi.string().allow(''),
+});
+
+module.exports = { eventSchema, calendarSchema };

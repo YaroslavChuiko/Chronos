@@ -3,6 +3,7 @@ const { DEFAULT_HOLIDAY } = require('~/consts/default');
 const templates = require('~/consts/email');
 const { ROLES } = require('~/consts/validation');
 const { checkCalendarAction, checkCalendarName } = require('~/helpers/action-checks');
+const { splitParams, getCalendarFilters } = require('~/helpers/filtering');
 const { getHolidaysByIP } = require('~/helpers/holiday-api');
 const ServerError = require('~/helpers/server-error');
 const { calendar, user, userCalendars } = require('~/lib/prisma');
@@ -11,11 +12,17 @@ const { Factory, Email, Token } = require('~/services');
 const getCalendars = async (req, res) => {
   const { id } = req.user;
 
+  const roles = splitParams(req.query.roles, String);
+  const filters = roles.length ? getCalendarFilters({ roles }) : {};
+
   const calendars = await Factory.findMany(
     calendar,
     {
       users: {
-        some: { user: { id } },
+        some: {
+          user: { id },
+          ...filters,
+        },
       },
     },
     null,
