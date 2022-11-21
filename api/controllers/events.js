@@ -4,12 +4,10 @@ const { checkEventAction, checkCalendarAction } = require('~/helpers/action-chec
 const ServerError = require('~/helpers/server-error');
 const { event, calendarEvents, userEvents, user, calendar } = require('~/lib/prisma');
 const { Token, Email, Factory } = require('~/services');
-const { getEventFilters } = require('~/helpers/filtering');
+const { getEventFilters, splitParams: split } = require('~/helpers/filtering');
 
 const getCalendarEvents = async (req, res) => {
   const userId = req.user.id;
-
-  const split = (str, mapTo) => (str && str.split(',').map(mapTo)) || [];
 
   const { calendars, types } = req.query;
   const calendarIDs = split(calendars, Number);

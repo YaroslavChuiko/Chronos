@@ -5,4 +5,10 @@ const getEventFilters = ({ types, calendars }) => ({
   type: { in: types },
 });
 
-module.exports = { getEventFilters };
+const getCalendarFilters = ({ roles }) => ({
+  role: { in: roles },
+});
+
+const splitParams = (str, mapTo) => (str && str.split(',').map(mapTo)) || [];
+
+module.exports = { getEventFilters, getCalendarFilters, splitParams };
