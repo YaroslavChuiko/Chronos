@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Flex } from '@chakra-ui/react';
+import { Flex, useDisclosure } from '@chakra-ui/react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import Sidebar from '~/components/Sidebar/Sidebar';
 import { CALENDAR_OPTIONS as OPTIONS } from '~/consts/calendar';
 import styles from './calendars.styles';
@@ -12,6 +13,7 @@ import PageAlert from '~/components/PageAlert/PageAlert';
 import useGetHolidays from '~/hooks/use-get-holidays';
 import { colors } from '~/consts/theme';
 import useGetEvents from '~/hooks/use-get-events';
+import CreateEventModal from '~/components/Modal/CreateEventModal';
 
 const CalendarPage = () => {
   const [calendars, setCalendars] = useState([]);
@@ -27,6 +29,9 @@ const CalendarPage = () => {
     calendars: filter.calendars,
     types: filter.types,
   });
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedDate, setSelectedDate] = useState('');
 
   useEffect(() => {
     if (data) {
@@ -47,18 +52,28 @@ const CalendarPage = () => {
     return <Loader />;
   }
 
+  const onDateClick = (info) => {
+    setSelectedDate(info.dateStr);
+    onOpen();
+    // alert('Clicked on: ' + info.dateStr);
+    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+    // alert('Current view: ' + info.view.type);
+  };
+
   return (
     <Flex sx={styles.container}>
       <Sidebar setFilter={setFilter} calendars={calendars} />
       <Flex sx={styles.calendar}>
         <FullCalendar
-          plugins={[dayGridPlugin]}
+          plugins={[dayGridPlugin, interactionPlugin]}
+          dateClick={onDateClick}
           initialView={OPTIONS.initialView}
           headerToolbar={OPTIONS.toolbar}
           events={eventData}
           eventBackgroundColor={colors.yellow[400]}
           eventBorderColor={colors.yellow[400]}
         />
+        <CreateEventModal isOpen={isOpen} onClose={onClose} selectedDate={selectedDate} />
       </Flex>
     </Flex>
   );
