@@ -98,7 +98,7 @@ const updateCalendar = async (req, res) => {
   checkCalendarName(data.name);
 
   const updatedCalendar = await calendar.update({
-    where: { id: calendarId, create: { users: { some: { id: userId } } } },
+    where: { id: calendarId },
     data,
   });
 

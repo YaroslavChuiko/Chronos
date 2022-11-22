@@ -1,19 +1,15 @@
 import { useFormik } from 'formik';
 import CustomModal from '~/components/CustomModal/CustomModal';
-import { COLOR_DEFAULTS } from '~/consts/validation';
 import useCustomToast from '~/hooks/use-custom-toast';
-import { useCreateCalendarMutation } from '~/store/api/apiSlice';
+import { useUpdateCalendarMutation } from '~/store/api/apiSlice';
 import { createSchema } from '~/validation/calendar';
 import CalendarForm from '../Forms/CalendarForm';
 
-const initialValues = {
-  name: '',
-  description: '',
-  color: COLOR_DEFAULTS.calendar,
-};
+const UpdateCalendarModal = ({ isOpen, onClose, calendar }) => {
+  const { id, name, description, color } = calendar;
+  const initialValues = { name, description, color };
 
-const CreateCalendarModal = ({ isOpen, onClose }) => {
-  const [create, { isLoading }] = useCreateCalendarMutation();
+  const [update, { isLoading }] = useUpdateCalendarMutation();
   const { toast } = useCustomToast();
 
   const close = () => {
@@ -21,11 +17,11 @@ const CreateCalendarModal = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (body) => {
     try {
-      await create(values);
+      await update({ id, body });
       close();
-      toast('Your calendar was successfully created!', 'success');
+      toast('Your calendar was successfully updated!', 'success');
     } catch (err) {
       toast(err.data.message, 'error');
     }
@@ -33,15 +29,16 @@ const CreateCalendarModal = ({ isOpen, onClose }) => {
 
   const { resetForm, ...formik } = useFormik({
     initialValues,
+    enableReinitialize: true,
     validationSchema: createSchema,
     onSubmit,
   });
 
   return (
-    <CustomModal isOpen={isOpen} onClose={close} header="Create a calendar">
+    <CustomModal isOpen={isOpen} onClose={close} header="Update the calendar">
       <CalendarForm formik={formik} isLoading={isLoading} />
     </CustomModal>
   );
 };
 
-export default CreateCalendarModal;
+export default UpdateCalendarModal;

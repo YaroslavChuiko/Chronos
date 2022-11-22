@@ -55,6 +55,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Calendars'],
     }),
+    updateCalendar: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `/calendars/${id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Calendars'],
+    }),
     deleteCalendar: builder.mutation({
       query: (id) => ({
         url: `/calendars/${id}`,
@@ -71,5 +79,6 @@ export const {
   useGetCalendarEventsQuery,
   useCreateCalendarEventMutation,
   useCreateCalendarMutation,
+  useUpdateCalendarMutation,
   useDeleteCalendarMutation,
 } = apiSlice;
