@@ -5,7 +5,7 @@ import { HAS_ADMIN_RIGHTS, IS_MAIN } from '~/consts/calendar';
 import useCustomToast from '~/hooks/use-custom-toast';
 import styles from './calendar-item.styles';
 
-const CalendarItem = ({ calendar: { id, name, role }, formik }) => {
+const CalendarItem = ({ calendar: { id, name, role }, formik, setFilter }) => {
   const { values, handleChange } = formik;
   const [deleteCalendar, { isLoading }] = useDeleteCalendarMutation();
 
@@ -14,6 +14,10 @@ const CalendarItem = ({ calendar: { id, name, role }, formik }) => {
   const deleteHandler = async () => {
     try {
       await deleteCalendar(id);
+      setFilter((state) => ({
+        ...state,
+        calendars: state.calendars.filter((key) => Number(key) !== id),
+      }));
       toast('Your calendar was successfully removed!', 'success');
     } catch (err) {
       toast(err.data.message, 'error');

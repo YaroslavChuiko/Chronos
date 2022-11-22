@@ -1,12 +1,24 @@
-import { Checkbox, Flex, StackDivider, Text, VStack } from '@chakra-ui/react';
+import { PlusSquareIcon } from '@chakra-ui/icons';
+import {
+  Button,
+  Checkbox,
+  Flex,
+  StackDivider,
+  Text,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
+import CreateCalendarModal from '~/components/Modal/CreateCalendarModal';
 import { CALENDAR_SECTIONS, CALENDAR_FILTER } from '~/consts/calendar';
 import CalendarItem from '../CalendarItem/CalendarItem';
 import { initialCalendars, initialTypes } from './const';
 import styles from './my-calendars.styles';
 
 const MyCalendars = ({ calendars, setFilter }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const { values, handleChange } = useFormik({
     initialValues: {
       calendars: initialCalendars(calendars),
@@ -30,11 +42,23 @@ const MyCalendars = ({ calendars, setFilter }) => {
   return (
     <VStack sx={styles.calendars} spacing={4} divider={<StackDivider borderColor="gray.200" />}>
       <Flex sx={styles.subContainer}>
-        <Text fontSize="xl">{CALENDAR_SECTIONS.my}</Text>
+        <Flex sx={styles.newCalendar}>
+          <Text fontSize="xl">{CALENDAR_SECTIONS.my}</Text>
+          <Button
+            onClick={onOpen}
+            size="sm"
+            variant="outline"
+            colorScheme="green"
+            leftIcon={<PlusSquareIcon />}
+          >
+            New
+          </Button>
+        </Flex>
         {calendars.map((c) => (
           <CalendarItem
             key={c.id}
             calendar={c}
+            setFilter={setFilter}
             formik={{
               handleChange,
               values,
@@ -75,6 +99,7 @@ const MyCalendars = ({ calendars, setFilter }) => {
           </Checkbox>
         ))}
       </Flex>
+      <CreateCalendarModal isOpen={isOpen} onClose={onClose} />
     </VStack>
   );
 };

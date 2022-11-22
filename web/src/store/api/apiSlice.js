@@ -47,12 +47,20 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Events'],
     }),
+    createCalendar: builder.mutation({
+      query: (body) => ({
+        url: `/calendars`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Calendars'],
+    }),
     deleteCalendar: builder.mutation({
       query: (id) => ({
         url: `/calendars/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Calendars'],
+      invalidatesTags: ['Calendars', 'Events'],
     }),
   }),
 });
@@ -62,5 +70,6 @@ export const {
   useLazyGetHolidaysQuery,
   useGetCalendarEventsQuery,
   useCreateCalendarEventMutation,
+  useCreateCalendarMutation,
   useDeleteCalendarMutation,
 } = apiSlice;
