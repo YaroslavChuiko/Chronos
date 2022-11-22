@@ -4,23 +4,25 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Select,
   Textarea,
   VStack,
 } from '@chakra-ui/react';
 import { useFormik } from 'formik';
-import React from 'react';
 import useCustomToast from '~/hooks/use-custom-toast';
+import { useCreateCalendarEventMutation } from '~/store/api/apiSlice';
 import { arrangementSchema } from '~/validation/event';
 
-const ArrangementForm = ({ onClose, initialDate }) => {
-  // const [login, { isLoading }] = useLoginMutation();
+const ArrangementForm = ({ onClose, initialDate, userCalrndars }) => {
+  const [createEvent, { isLoading }] = useCreateCalendarEventMutation();
   const { toast } = useCustomToast();
 
   const initialValues = {
+    calendar: '',
     name: '',
     content: '',
-    start: `${initialDate}T06:00`,
-    end: `${initialDate}T10:00`,
+    start: initialDate ? `${initialDate}T06:00` : '',
+    end: initialDate ? `${initialDate}T10:00` : '',
     color: '#8e24aa',
     type: 'arrangement',
   };
@@ -28,7 +30,8 @@ const ArrangementForm = ({ onClose, initialDate }) => {
   const onSubmit = async (values) => {
     console.log(values);
     try {
-      // await login(values).unwrap();
+      await createEvent(values).unwrap();
+      onClose();
     } catch (error) {
       toast(error.data.message, 'error');
     }
@@ -43,7 +46,28 @@ const ArrangementForm = ({ onClose, initialDate }) => {
   return (
     <form onSubmit={handleSubmit}>
       <VStack spacing={4}>
-        <FormControl isInvalid={!!errors.name && touched.name}>
+        <FormControl isInvalid={!!errors.calendar && touched.calendar} isRequired>
+          <FormLabel htmlFor="calendar">Calendar</FormLabel>
+          <Select
+            id="calendar"
+            name="calendar"
+            value={values.calendar}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            variant="filled"
+            autoFocus
+            focusBorderColor="teal.400"
+            placeholder="Select a calendar"
+          >
+            {userCalrndars.map((calendar) => (
+              <option key={calendar.id} value={calendar.id}>
+                {calendar.name}
+              </option>
+            ))}
+          </Select>
+          <FormErrorMessage>{errors.calendar}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.name && touched.name} isRequired>
           <FormLabel htmlFor="name">Title</FormLabel>
           <Input
             id="name"
@@ -73,7 +97,7 @@ const ArrangementForm = ({ onClose, initialDate }) => {
           />
           <FormErrorMessage>{errors.content}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={!!errors.start && touched.start}>
+        <FormControl isInvalid={!!errors.start && touched.start} isRequired>
           <FormLabel htmlFor="start">Start at</FormLabel>
           <Input
             id="start"
@@ -88,7 +112,7 @@ const ArrangementForm = ({ onClose, initialDate }) => {
           />
           <FormErrorMessage>{errors.start}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={!!errors.end && touched.end}>
+        <FormControl isInvalid={!!errors.end && touched.end} isRequired>
           <FormLabel htmlFor="end">End at</FormLabel>
           <Input
             id="end"
@@ -103,7 +127,7 @@ const ArrangementForm = ({ onClose, initialDate }) => {
           />
           <FormErrorMessage>{errors.end}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={!!errors.color && touched.color}>
+        <FormControl isInvalid={!!errors.color && touched.color} isRequired>
           <FormLabel htmlFor="color">Color</FormLabel>
           <Input
             id="color"
@@ -120,7 +144,7 @@ const ArrangementForm = ({ onClose, initialDate }) => {
         </FormControl>
         <Button
           type="submit"
-          // isLoading={isLoading}
+          isLoading={isLoading}
           loadingText="Submitting"
           spinnerPlacement="end"
           colorScheme="yellow"
