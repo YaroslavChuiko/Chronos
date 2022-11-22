@@ -22,6 +22,7 @@ export const extendedApiSlice = apiSlice.injectEndpoints({
           dispatch(setCredentials(data));
         } catch (error) {}
       },
+      invalidatesTags: ['Calendars', 'Holidays', 'Events'],
     }),
     refresh: builder.mutation({
       query: () => ({
