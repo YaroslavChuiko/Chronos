@@ -1,7 +1,4 @@
 import {
-  FormControl,
-  FormLabel,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,13 +11,24 @@ import {
   TabPanels,
   Tabs,
 } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { useEffect, useState } from 'react';
+import { useGetCalendarsQuery } from '~/store/api/apiSlice';
 import ArrangementForm from './ArrangementForm';
+import TaskForm from './TaskForm';
 
 const CreateEventModal = ({ isOpen, onClose, selectedDate }) => {
-  const initialRef = useRef(null);
+  const [userCalendars, setUserCalendars] = useState([]);
+
+  const { data } = useGetCalendarsQuery({ roles: ['admin', 'moderator'] });
+
+  useEffect(() => {
+    if (data) {
+      setUserCalendars(data);
+    }
+  }, [data]);
+
   return (
-    <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create an event</ModalHeader>
@@ -35,13 +43,18 @@ const CreateEventModal = ({ isOpen, onClose, selectedDate }) => {
 
             <TabPanels>
               <TabPanel>
-                <ArrangementForm onClose={onClose} initialDate={selectedDate} />
+                <ArrangementForm
+                  onClose={onClose}
+                  initialDate={selectedDate}
+                  userCalrndars={userCalendars}
+                />
               </TabPanel>
               <TabPanel>
-                <FormControl mt={4}>
-                  <FormLabel>Start at</FormLabel>
-                  <Input placeholder="Select Date and Time" size="md" type="datetime-local" />
-                </FormControl>
+                <TaskForm
+                  onClose={onClose}
+                  initialDate={selectedDate}
+                  userCalrndars={userCalendars}
+                />
               </TabPanel>
               <TabPanel>
                 <p>three!</p>
@@ -49,13 +62,6 @@ const CreateEventModal = ({ isOpen, onClose, selectedDate }) => {
             </TabPanels>
           </Tabs>
         </ModalBody>
-
-        {/* <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button variant="ghost">Secondary Action</Button>
-        </ModalFooter> */}
       </ModalContent>
     </Modal>
   );
