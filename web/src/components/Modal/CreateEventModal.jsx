@@ -1,25 +1,11 @@
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from '@chakra-ui/react';
+import CustomModal from '../CustomModal/CustomModal';
 import CreateEventTabs from '../Tabs/CreateEventTabs';
 
 const CreateEventModal = ({ isOpen, onClose, selectedDate }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Create an event</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <CreateEventTabs onClose={onClose} selectedDate={selectedDate} />
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    <CustomModal isOpen={isOpen} onClose={onClose} header="Create an event">
+      <CreateEventTabs onSuccess={onClose} selectedDate={selectedDate} />
+    </CustomModal>
   );
 };
 
