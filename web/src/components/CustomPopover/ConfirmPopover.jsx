@@ -17,7 +17,7 @@ const ConfirmPopover = ({ header, trigger, isOpen, onClose, onConfirm }) => {
   return (
     <Popover returnFocusOnClose={false} placement="bottom" isOpen={isOpen} onClose={onClose}>
       <PopoverTrigger>{trigger}</PopoverTrigger>
-      <PopoverContent sx={{ borderColor: 'red.400' }}>
+      <PopoverContent>
         <PopoverHeader fontWeight="semibold">{header}</PopoverHeader>
         <PopoverBody>
           <Flex sx={{ width: '100%', justifyContent: 'space-around' }}>

@@ -1,12 +1,14 @@
-import { Avatar, Button, Flex, Text } from '@chakra-ui/react';
+import { Avatar, Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import MyCalendars from '~/components/Calendar/MyCalendars/MyCalendars';
 import useCustomToast from '~/hooks/use-custom-toast.js';
 import { useLogoutMutation } from '~/store/api/authSlice.js';
+import ConfirmPopover from '../CustomPopover/ConfirmPopover.jsx';
 import styles from './sidebar.styles.js';
 
 const Sidebar = ({ calendars, setFilter }) => {
   const { user } = useSelector((state) => state.auth);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [logout, { isLoading }] = useLogoutMutation();
   const { toast } = useCustomToast();
 
@@ -34,15 +36,23 @@ const Sidebar = ({ calendars, setFilter }) => {
               {user.login}
             </Text>
           </Flex>
-          <Button
-            onClick={logoutHandler}
-            isLoading={isLoading}
-            size="sm"
-            colorScheme="red"
-            variant="outline"
-          >
-            Logout
-          </Button>
+          <ConfirmPopover
+            header="Are you sure you want to logout?"
+            trigger={
+              <Button
+                onClick={onOpen}
+                isLoading={isLoading}
+                size="sm"
+                colorScheme="red"
+                variant="outline"
+              >
+                Logout
+              </Button>
+            }
+            onConfirm={logoutHandler}
+            isOpen={isOpen}
+            onClose={onClose}
+          />
         </Flex>
       </Flex>
     </Flex>
