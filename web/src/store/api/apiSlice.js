@@ -5,7 +5,7 @@ import baseQueryWithReauth from './baseQueryWithReauth';
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Event'],
+  tagTypes: ['Calendars', 'Holidays', 'Events'],
   endpoints: (builder) => ({
     getCalendars: builder.query({
       query: ({ roles } = { roles: [] }) => ({
@@ -14,7 +14,7 @@ export const apiSlice = createApi({
           ...(roles.length && { roles: roles.join(',') }),
         },
       }),
-      providesTags: ['Calendar'],
+      providesTags: ['Calendars'],
     }),
     getHolidays: builder.query({
       query: () => `/calendars/holidays`,
@@ -29,7 +29,7 @@ export const apiSlice = createApi({
       }),
       providesTags: (result, _error, _arg) => {
         const events = result || [];
-        return ['Event', ...events.map(({ id }) => ({ type: 'Event', id }))];
+        return ['Events', ...events.map(({ id }) => ({ type: 'Events', id }))];
       },
     }),
     createCalendarEvent: builder.mutation({
@@ -45,7 +45,30 @@ export const apiSlice = createApi({
           type,
         },
       }),
-      invalidatesTags: ['Event'],
+      invalidatesTags: ['Events'],
+    }),
+    createCalendar: builder.mutation({
+      query: (body) => ({
+        url: `/calendars`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Calendars'],
+    }),
+    updateCalendar: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `/calendars/${id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['Calendars'],
+    }),
+    deleteCalendar: builder.mutation({
+      query: (id) => ({
+        url: `/calendars/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Calendars', 'Events'],
     }),
   }),
 });
@@ -55,4 +78,7 @@ export const {
   useLazyGetHolidaysQuery,
   useGetCalendarEventsQuery,
   useCreateCalendarEventMutation,
+  useCreateCalendarMutation,
+  useUpdateCalendarMutation,
+  useDeleteCalendarMutation,
 } = apiSlice;

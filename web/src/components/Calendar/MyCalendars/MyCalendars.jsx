@@ -1,11 +1,24 @@
-import { Checkbox, Flex, StackDivider, Text, VStack } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
+import {
+  Button,
+  Checkbox,
+  Flex,
+  StackDivider,
+  Text,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react';
 import { useFormik } from 'formik';
 import { useEffect } from 'react';
-import { CALENDAR_SECTIONS, CALENDAR_FILTER, IS_MAIN } from '~/consts/calendar';
+import CreateCalendarModal from '~/components/Modal/CreateCalendarModal';
+import { CALENDAR_SECTIONS, CALENDAR_FILTER } from '~/consts/calendar';
+import CalendarItem from '../CalendarItem/CalendarItem';
 import { initialCalendars, initialTypes } from './const';
 import styles from './my-calendars.styles';
 
 const MyCalendars = ({ calendars, setFilter }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const { values, handleChange } = useFormik({
     initialValues: {
       calendars: initialCalendars(calendars),
@@ -29,22 +42,28 @@ const MyCalendars = ({ calendars, setFilter }) => {
   return (
     <VStack sx={styles.calendars} spacing={4} divider={<StackDivider borderColor="gray.200" />}>
       <Flex sx={styles.subContainer}>
-        <Text fontSize="xl">{CALENDAR_SECTIONS.my}</Text>
-        {calendars.map((c) => (
-          <Checkbox
-            name={`calendars.${c.id}`}
-            value={values.calendars[c.id]}
-            key={c.id}
-            spacing="1rem"
-            size="lg"
-            disabled={IS_MAIN(c.name)}
-            defaultChecked={values.calendars[c.id]}
-            sx={styles.checkbox}
-            colorScheme="yellow"
-            onChange={handleChange}
+        <Flex sx={styles.newCalendar}>
+          <Text fontSize="xl">{CALENDAR_SECTIONS.my}</Text>
+          <Button
+            onClick={onOpen}
+            size="sm"
+            variant="outline"
+            colorScheme="green"
+            leftIcon={<AddIcon />}
           >
-            {c.name}
-          </Checkbox>
+            New
+          </Button>
+        </Flex>
+        {calendars.map((c) => (
+          <CalendarItem
+            key={c.id}
+            calendar={c}
+            setFilter={setFilter}
+            formik={{
+              handleChange,
+              values,
+            }}
+          />
         ))}
       </Flex>
       <Flex sx={styles.subContainer}>
@@ -80,6 +99,7 @@ const MyCalendars = ({ calendars, setFilter }) => {
           </Checkbox>
         ))}
       </Flex>
+      <CreateCalendarModal isOpen={isOpen} onClose={onClose} />
     </VStack>
   );
 };

@@ -15,9 +15,8 @@ const getCalendars = async (req, res) => {
   const roles = splitParams(req.query.roles, String);
   const filters = roles.length ? getCalendarFilters({ roles }) : {};
 
-  const calendars = await Factory.findMany(
-    calendar,
-    {
+  const calendars = await calendar.findMany({
+    where: {
       users: {
         some: {
           user: { id },
@@ -25,10 +24,26 @@ const getCalendars = async (req, res) => {
         },
       },
     },
-    null,
+    include: {
+      users: {
+        select: { role: true },
+        where: { userId: id },
+      },
+    },
+  });
+
+  const result = calendars.reduce(
+    (prev, { users, ...curr }) => [
+      ...prev,
+      {
+        ...curr,
+        role: users[0].role,
+      },
+    ],
+    [],
   );
 
-  res.json(calendars);
+  res.json(result);
 };
 
 const getCalendarById = async (req, res) => {
@@ -83,7 +98,7 @@ const updateCalendar = async (req, res) => {
   checkCalendarName(data.name);
 
   const updatedCalendar = await calendar.update({
-    where: { id: calendarId, create: { users: { some: { id: userId } } } },
+    where: { id: calendarId },
     data,
   });
 

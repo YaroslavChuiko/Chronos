@@ -8,6 +8,11 @@ const styles = {
   checkbox: {
     marginTop: '20px',
   },
+  newCalendar: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
   calendars: {
     ...base,
     maxHeight: '80%',
