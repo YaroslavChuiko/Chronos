@@ -5,7 +5,7 @@ import baseQueryWithReauth from './baseQueryWithReauth';
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Calendars', 'Holidays', 'Events'],
+  tagTypes: ['Calendars', 'Holidays', 'Events', 'Invited', 'Users'],
   endpoints: (builder) => ({
     getCalendars: builder.query({
       query: ({ roles } = { roles: [] }) => ({
@@ -70,6 +70,22 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Calendars', 'Events'],
     }),
+    shareCalendar: builder.mutation({
+      query: ({ id, email }) => ({
+        url: `calendars/${id}/invite`,
+        method: 'POST',
+        body: { email },
+      }),
+      invalidatesTags: ['Invited', 'Users'],
+    }),
+    getCalendarInvited: builder.query({
+      query: (id) => `/calendars/${id}/invited`,
+      providesTags: ['Invited'],
+    }),
+    getUsers: builder.query({
+      query: (id) => `/calendars/${id}/users`,
+      providesTags: ['Users'],
+    }),
   }),
 });
 
@@ -81,4 +97,7 @@ export const {
   useCreateCalendarMutation,
   useUpdateCalendarMutation,
   useDeleteCalendarMutation,
+  useShareCalendarMutation,
+  useGetCalendarInvitedQuery,
+  useGetUsersQuery,
 } = apiSlice;

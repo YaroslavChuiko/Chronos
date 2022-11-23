@@ -1,6 +1,7 @@
 import { Button, FormControl, FormErrorMessage, FormLabel, Input, VStack } from '@chakra-ui/react';
+import ShareCalendarForm from './ShareCalendarForm';
 
-const CalendarForm = ({ formik, isLoading }) => {
+const CalendarForm = ({ formik, isLoading, calendar = null }) => {
   const { values, errors, touched, handleSubmit, handleChange, handleBlur } = formik;
 
   return (
@@ -49,6 +50,7 @@ const CalendarForm = ({ formik, isLoading }) => {
           />
           <FormErrorMessage>{errors.color}</FormErrorMessage>
         </FormControl>
+        {calendar && <ShareCalendarForm calendar={calendar} />}
         <Button
           type="submit"
           isLoading={isLoading}

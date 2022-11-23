@@ -9,6 +9,7 @@ const {
   getCalendars,
   getCalendarById,
   getHolidays,
+  getNotInvitedUsers,
 } = require('~/controllers/calendars');
 const authenticate = require('~/middleware/auth');
 const boundary = require('~/helpers/error-boundary');
@@ -29,6 +30,7 @@ router.get('/:id', boundary(getCalendarById));
 router.put('/:id', validate(updateSchema), boundary(updateCalendar));
 router.delete('/:id', boundary(deleteCalendar));
 
+router.get('/:id/users', boundary(getNotInvitedUsers));
 router.get('/:id/invited', boundary(getInvitedUsers));
 router.post('/:id/invite', validate(shareSchema), boundary(shareCalendar));
 router.post('/invite-confirm/:token', boundary(confirmCalendar));
