@@ -13,31 +13,39 @@ import useCustomToast from '~/hooks/use-custom-toast';
 import { useCreateCalendarEventMutation } from '~/store/api/apiSlice';
 import { arrangementSchema } from '~/validation/event';
 
-const ArrangementForm = ({ onClose = null, initialDate, userCalendars }) => {
+const initialValues = {
+  calendar: '',
+  name: '',
+  content: '',
+  start: '',
+  end: '',
+  color: '#8e24aa',
+  type: 'arrangement',
+};
+
+const ArrangementForm = ({ onSuccess = null, updatedValues = {}, userCalendars }) => {
   const [createEvent, { isLoading }] = useCreateCalendarEventMutation();
   const { toast } = useCustomToast();
 
-  const initialValues = {
-    calendar: '',
-    name: '',
-    content: '',
-    start: initialDate ? `${initialDate}T06:00` : '',
-    end: initialDate ? `${initialDate}T10:00` : '',
-    color: '#8e24aa',
-    type: 'arrangement',
+  const formValues = { ...initialValues, ...updatedValues };
+
+  const close = () => {
+    resetForm();
+    onSuccess && onSuccess();
   };
 
   const onSubmit = async (values) => {
     try {
       await createEvent(values).unwrap();
-      onClose && onClose();
+      close();
+      toast('Your event was successfully created!', 'success');
     } catch (error) {
       toast(error.data.message, 'error');
     }
   };
 
-  const { values, touched, errors, handleChange, handleBlur, handleSubmit } = useFormik({
-    initialValues,
+  const { values, touched, errors, handleChange, handleBlur, handleSubmit, resetForm } = useFormik({
+    initialValues: formValues,
     validationSchema: arrangementSchema,
     onSubmit,
   });

@@ -13,18 +13,24 @@ import useCustomToast from '~/hooks/use-custom-toast';
 import { useCreateCalendarEventMutation } from '~/store/api/apiSlice';
 import { reminderSchema } from '~/validation/event';
 
-const ReminderForm = ({ onClose = null, initialDate, userCalendars }) => {
-  //!!add {initialValuesProp = initialValues, .....} for update
+const initialValues = {
+  calendar: '',
+  name: '',
+  content: '',
+  start: '',
+  color: '#fb2d2d',
+  type: 'reminder',
+};
+
+const ReminderForm = ({ onSuccess = null, updatedValues = {}, userCalendars }) => {
   const [createEvent, { isLoading }] = useCreateCalendarEventMutation();
   const { toast } = useCustomToast();
 
-  const initialValues = {
-    calendar: '',
-    name: '',
-    content: '',
-    start: initialDate ? `${initialDate}T10:00` : '',
-    color: '#fb2d2d',
-    type: 'reminder',
+  const formValues = { ...initialValues, ...updatedValues };
+
+  const close = () => {
+    resetForm();
+    onSuccess && onSuccess();
   };
 
   const onSubmit = async ({ calendar, name, content, date, color, type, start }) => {
@@ -39,14 +45,15 @@ const ReminderForm = ({ onClose = null, initialDate, userCalendars }) => {
         end: moment(start).minutes(moment(start).minutes() + 5), // end it's start + 5 min
       };
       await createEvent(data).unwrap();
-      onClose && onClose();
+      close();
+      toast('Your event was successfully created!', 'success');
     } catch (error) {
       toast(error.data.message, 'error');
     }
   };
 
-  const { values, touched, errors, handleChange, handleBlur, handleSubmit } = useFormik({
-    initialValues,
+  const { values, touched, errors, handleChange, handleBlur, handleSubmit, resetForm } = useFormik({
+    initialValues: formValues,
     validationSchema: reminderSchema,
     onSubmit,
   });

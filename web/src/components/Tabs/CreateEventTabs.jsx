@@ -5,7 +5,7 @@ import ArrangementForm from '../Forms/ArrangementForm';
 import ReminderForm from '../Forms/ReminderForm';
 import TaskForm from '../Forms/TaskForm';
 
-const CreateEventTabs = ({ onClose = null, selectedDate = null }) => {
+const CreateEventTabs = ({ onSuccess = null, selectedDate = null }) => {
   const [userCalendars, setUserCalendars] = useState([]);
 
   const { data } = useGetCalendarsQuery({ roles: ['admin', 'moderator'] });
@@ -15,6 +15,19 @@ const CreateEventTabs = ({ onClose = null, selectedDate = null }) => {
       setUserCalendars(data);
     }
   }, [data]);
+
+  const arrangementValues = {
+    start: selectedDate ? `${selectedDate}T06:00` : '',
+    end: selectedDate ? `${selectedDate}T10:00` : '',
+  };
+
+  const taskValues = {
+    date: selectedDate || '',
+  };
+
+  const reminderValues = {
+    start: selectedDate ? `${selectedDate}T10:00` : '',
+  };
 
   return (
     <Tabs>
@@ -27,18 +40,22 @@ const CreateEventTabs = ({ onClose = null, selectedDate = null }) => {
       <TabPanels>
         <TabPanel>
           <ArrangementForm
-            onClose={onClose}
-            initialDate={selectedDate}
+            onSuccess={onSuccess}
+            updatedValues={arrangementValues}
             userCalendars={userCalendars}
           />
         </TabPanel>
         <TabPanel>
-          <TaskForm onClose={onClose} initialDate={selectedDate} userCalendars={userCalendars} />
+          <TaskForm
+            onSuccess={onSuccess}
+            updatedValues={taskValues}
+            userCalendars={userCalendars}
+          />
         </TabPanel>
         <TabPanel>
           <ReminderForm
-            onClose={onClose}
-            initialDate={selectedDate}
+            onSuccess={onSuccess}
+            updatedValues={reminderValues}
             userCalendars={userCalendars}
           />
         </TabPanel>

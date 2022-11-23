@@ -13,17 +13,24 @@ import useCustomToast from '~/hooks/use-custom-toast';
 import { useCreateCalendarEventMutation } from '~/store/api/apiSlice';
 import { taskSchema } from '~/validation/event';
 
-const TaskForm = ({ onClose = null, initialDate, userCalendars }) => {
+const initialValues = {
+  calendar: '',
+  name: '',
+  content: '',
+  date: '',
+  color: '#8eaaaa',
+  type: 'task',
+};
+
+const TaskForm = ({ onSuccess = null, updatedValues, userCalendars }) => {
   const [createEvent, { isLoading }] = useCreateCalendarEventMutation();
   const { toast } = useCustomToast();
 
-  const initialValues = {
-    calendar: '',
-    name: '',
-    content: '',
-    date: initialDate || '',
-    color: '#8eaaaa',
-    type: 'task',
+  const formValues = { ...initialValues, ...updatedValues };
+
+  const close = () => {
+    resetForm();
+    onSuccess && onSuccess();
   };
 
   const onSubmit = async ({ calendar, name, content, date, color, type }) => {
@@ -38,14 +45,15 @@ const TaskForm = ({ onClose = null, initialDate, userCalendars }) => {
         end: `${date}T24:00`, // database save as 22:00
       };
       await createEvent(data).unwrap();
-      onClose && onClose();
+      close();
+      toast('Your event was successfully created!', 'success');
     } catch (error) {
       toast(error.data.message, 'error');
     }
   };
 
-  const { values, touched, errors, handleChange, handleBlur, handleSubmit } = useFormik({
-    initialValues,
+  const { values, touched, errors, handleChange, handleBlur, handleSubmit, resetForm } = useFormik({
+    initialValues: formValues,
     validationSchema: taskSchema,
     onSubmit,
   });
