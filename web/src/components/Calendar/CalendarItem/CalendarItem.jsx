@@ -1,13 +1,14 @@
-import { CloseIcon, EditIcon } from '@chakra-ui/icons';
-import { Checkbox, Flex, IconButton, useDisclosure } from '@chakra-ui/react';
+import { CloseIcon, EditIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { Checkbox, Flex, IconButton, Text, useDisclosure, VStack } from '@chakra-ui/react';
 import { useDeleteCalendarMutation } from '~/store/api/apiSlice';
 import { HAS_ADMIN_RIGHTS, IS_MAIN } from '~/consts/calendar';
 import useCustomToast from '~/hooks/use-custom-toast';
 import styles from './calendar-item.styles';
 import UpdateCalendarModal from '~/components/Modal/UpdateCalendarModal';
+import CustomPopover from '~/components/CustomPopover/CustomPopover';
 
 const CalendarItem = ({ calendar, formik, setFilter }) => {
-  const { id, name, role } = calendar;
+  const { id, name, role, description } = calendar;
   const { values, handleChange } = formik;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [deleteCalendar, { isLoading }] = useDeleteCalendarMutation();
@@ -60,6 +61,17 @@ const CalendarItem = ({ calendar, formik, setFilter }) => {
           />
         </>
       )}
+      <CustomPopover
+        trigger={<IconButton sx={styles.icon} variant="ghost" size="sm" icon={<HamburgerIcon />} />}
+        header="Calendar info"
+        sx={{ borderColor: calendar.color }}
+      >
+        <VStack>
+          <Text sx={{ width: '100%', fontWeight: 'bold' }}>{name}</Text>
+          <Text sx={{ width: '100%' }}>{description}</Text>
+          <Text sx={{ width: '100%', fontStyle: 'italic' }}>{`Your role: ${role}`}</Text>
+        </VStack>
+      </CustomPopover>
       <UpdateCalendarModal calendar={calendar} isOpen={isOpen} onClose={onClose} />
     </Flex>
   );
