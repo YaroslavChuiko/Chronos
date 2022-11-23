@@ -36,7 +36,7 @@ const UpdateCalendarModal = ({ isOpen, onClose, calendar }) => {
 
   return (
     <CustomModal isOpen={isOpen} onClose={close} header="Update the calendar">
-      <CalendarForm formik={formik} isLoading={isLoading} />
+      <CalendarForm formik={formik} isLoading={isLoading} calendar={calendar} />
     </CustomModal>
   );
 };

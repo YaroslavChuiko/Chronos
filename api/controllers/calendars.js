@@ -123,18 +123,53 @@ const getInvitedUsers = async (req, res) => {
 
   await Factory.exists(calendar, { id });
 
-  const users = await Factory.findMany(
-    user,
-    {
+  const users = await user.findMany({
+    where: {
       calendars: {
         some: {
-          isConfirmed: false,
           calendar: { id },
         },
       },
     },
-    { id: true, email: true },
+    include: {
+      calendars: {
+        where: { calendarId: id },
+        select: { isConfirmed: true },
+      },
+    },
+  });
+
+  const result = users.reduce(
+    (prev, { calendars, password, ...curr }) => [
+      ...prev,
+      {
+        ...curr,
+        isConfirmed: calendars[0].isConfirmed,
+      },
+    ],
+    [],
   );
+
+  res.json(result);
+};
+
+const getNotInvitedUsers = async (req, res) => {
+  const id = Number(req.params.id);
+
+  await Factory.exists(calendar, { id });
+
+  const users = await user.findMany({
+    where: {
+      NOT: {
+        calendars: {
+          some: {
+            calendarId: id,
+          },
+        },
+      },
+    },
+    select: { id: true, email: true },
+  });
 
   res.json(users);
 };
@@ -204,4 +239,5 @@ module.exports = {
   shareCalendar,
   confirmCalendar,
   getInvitedUsers,
+  getNotInvitedUsers,
 };
