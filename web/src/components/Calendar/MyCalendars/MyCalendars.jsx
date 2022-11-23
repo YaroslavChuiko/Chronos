@@ -1,4 +1,4 @@
-import { PlusSquareIcon } from '@chakra-ui/icons';
+import { AddIcon } from '@chakra-ui/icons';
 import {
   Button,
   Checkbox,
@@ -49,7 +49,7 @@ const MyCalendars = ({ calendars, setFilter }) => {
             size="sm"
             variant="outline"
             colorScheme="green"
-            leftIcon={<PlusSquareIcon />}
+            leftIcon={<AddIcon />}
           >
             New
           </Button>
