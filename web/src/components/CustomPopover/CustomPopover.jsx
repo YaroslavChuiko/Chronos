@@ -7,11 +7,11 @@ import {
   PopoverTrigger,
 } from '@chakra-ui/react';
 
-const CustomPopover = ({ header, trigger, children, sx = {} }) => {
+const CustomPopover = ({ header, trigger, children }) => {
   return (
     <Popover returnFocusOnClose={false} placement="bottom">
       <PopoverTrigger>{trigger}</PopoverTrigger>
-      <PopoverContent sx={{ background: 'gray.200', ...sx }}>
+      <PopoverContent sx={{ background: 'gray.200' }}>
         <PopoverHeader fontWeight="semibold">{header}</PopoverHeader>
         <PopoverCloseButton />
         <PopoverBody>{children}</PopoverBody>

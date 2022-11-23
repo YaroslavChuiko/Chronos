@@ -50,7 +50,6 @@ const CalendarForm = ({ formik, isLoading, calendar = null }) => {
           />
           <FormErrorMessage>{errors.color}</FormErrorMessage>
         </FormControl>
-        {calendar && <ShareCalendarForm calendar={calendar} />}
         <Button
           type="submit"
           isLoading={isLoading}
@@ -60,6 +59,7 @@ const CalendarForm = ({ formik, isLoading, calendar = null }) => {
         >
           Save
         </Button>
+        {calendar && <ShareCalendarForm calendar={calendar} />}
       </VStack>
     </form>
   );

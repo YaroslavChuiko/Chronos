@@ -74,7 +74,6 @@ const CalendarItem = ({ calendar, formik, setFilter }) => {
       <CustomPopover
         trigger={<IconButton sx={styles.icon} variant="ghost" size="sm" icon={<HamburgerIcon />} />}
         header="Calendar info"
-        sx={{ borderColor: calendar.color }}
       >
         <VStack>
           <Text sx={{ width: '100%', fontWeight: 'bold' }}>{name}</Text>
