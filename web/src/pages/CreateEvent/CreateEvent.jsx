@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '~/components/Layout/Layout';
-import CreateEventTabs from '~/components/Modal/CreateEventTabs';
+import CreateEventTabs from '~/components/Tabs/CreateEventTabs';
 
 const CreateEvent = () => {
   return (
