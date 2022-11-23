@@ -13,7 +13,7 @@ import useCustomToast from '~/hooks/use-custom-toast';
 import { useCreateCalendarEventMutation } from '~/store/api/apiSlice';
 import { taskSchema } from '~/validation/event';
 
-const TaskForm = ({ onClose, initialDate, userCalrndars }) => {
+const TaskForm = ({ onClose = null, initialDate, userCalendars }) => {
   const [createEvent, { isLoading }] = useCreateCalendarEventMutation();
   const { toast } = useCustomToast();
 
@@ -27,8 +27,6 @@ const TaskForm = ({ onClose, initialDate, userCalrndars }) => {
   };
 
   const onSubmit = async ({ calendar, name, content, date, color, type }) => {
-    console.log(values);
-
     try {
       const data = {
         calendar,
@@ -40,7 +38,7 @@ const TaskForm = ({ onClose, initialDate, userCalrndars }) => {
         end: `${date}T24:00`, // database save as 22:00
       };
       await createEvent(data).unwrap();
-      onClose();
+      onClose && onClose();
     } catch (error) {
       toast(error.data.message, 'error');
     }
@@ -68,7 +66,7 @@ const TaskForm = ({ onClose, initialDate, userCalrndars }) => {
             focusBorderColor="teal.400"
             placeholder="Select a calendar"
           >
-            {userCalrndars.map((calendar) => (
+            {userCalendars.map((calendar) => (
               <option key={calendar.id} value={calendar.id}>
                 {calendar.name}
               </option>
@@ -107,7 +105,7 @@ const TaskForm = ({ onClose, initialDate, userCalrndars }) => {
           <FormErrorMessage>{errors.content}</FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={!!errors.date && touched.date} isRequired>
-          <FormLabel htmlFor="date">date at</FormLabel>
+          <FormLabel htmlFor="date">Date</FormLabel>
           <Input
             id="date"
             name="date"

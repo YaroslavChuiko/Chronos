@@ -13,7 +13,7 @@ import useCustomToast from '~/hooks/use-custom-toast';
 import { useCreateCalendarEventMutation } from '~/store/api/apiSlice';
 import { arrangementSchema } from '~/validation/event';
 
-const ArrangementForm = ({ onClose, initialDate, userCalrndars }) => {
+const ArrangementForm = ({ onClose = null, initialDate, userCalendars }) => {
   const [createEvent, { isLoading }] = useCreateCalendarEventMutation();
   const { toast } = useCustomToast();
 
@@ -28,10 +28,9 @@ const ArrangementForm = ({ onClose, initialDate, userCalrndars }) => {
   };
 
   const onSubmit = async (values) => {
-    console.log(values);
     try {
       await createEvent(values).unwrap();
-      onClose();
+      onClose && onClose();
     } catch (error) {
       toast(error.data.message, 'error');
     }
@@ -59,7 +58,7 @@ const ArrangementForm = ({ onClose, initialDate, userCalrndars }) => {
             focusBorderColor="teal.400"
             placeholder="Select a calendar"
           >
-            {userCalrndars.map((calendar) => (
+            {userCalendars.map((calendar) => (
               <option key={calendar.id} value={calendar.id}>
                 {calendar.name}
               </option>
