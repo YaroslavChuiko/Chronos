@@ -9,6 +9,7 @@ import NotFound from './pages/NotFound/NotFound';
 import { useRefreshMutation } from './store/api/authSlice';
 import Loader from './components/Loader/Loader';
 import ConfirmEmail from './pages/ConfirmEmail/ConfirmEmail';
+import CreateEvent from './pages/CreateEvent/CreateEvent';
 
 const App = () => {
   const { user, accessToken } = useSelector((state) => state.auth);
@@ -29,6 +30,7 @@ const App = () => {
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<CalendarPage />} />
+          <Route path="/createEvent" element={<CreateEvent />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
