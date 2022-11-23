@@ -1,9 +1,9 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useGetCalendarsQuery } from '~/store/api/apiSlice';
-import ArrangementForm from './ArrangementForm';
-import ReminderForm from './ReminderForm';
-import TaskForm from './TaskForm';
+import ArrangementForm from '../Forms/ArrangementForm';
+import ReminderForm from '../Forms/ReminderForm';
+import TaskForm from '../Forms/TaskForm';
 
 const CreateEventTabs = ({ onClose = null, selectedDate = null }) => {
   const [userCalendars, setUserCalendars] = useState([]);
