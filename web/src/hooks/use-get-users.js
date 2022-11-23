@@ -9,7 +9,7 @@ const useGetUsers = (calendarId) => {
     if (data) {
       setUsers(data);
     }
-  });
+  }, [setUsers, data]);
 
   return { isLoading, users };
 };
