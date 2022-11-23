@@ -120,11 +120,13 @@ const deleteCalendar = async (req, res) => {
 
 const getInvitedUsers = async (req, res) => {
   const id = Number(req.params.id);
+  const userId = req.user.id;
 
   await Factory.exists(calendar, { id });
 
   const users = await user.findMany({
     where: {
+      id: { not: userId },
       calendars: {
         some: {
           calendar: { id },
