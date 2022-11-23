@@ -6,7 +6,7 @@ const { checkCalendarAction, checkCalendarName } = require('~/helpers/action-che
 const { splitParams, getCalendarFilters } = require('~/helpers/filtering');
 const { getHolidaysByIP } = require('~/helpers/holiday-api');
 const ServerError = require('~/helpers/server-error');
-const { calendar, user, userCalendars } = require('~/lib/prisma');
+const { calendar, user, userCalendars, event } = require('~/lib/prisma');
 const { Factory, Email, Token } = require('~/services');
 
 const getCalendars = async (req, res) => {
@@ -227,6 +227,29 @@ const confirmCalendar = async (req, res) => {
     },
     data: { isConfirmed: true },
   });
+
+  const events = await event.findMany({
+    where: {
+      calendars: {
+        some: {
+          calendarId,
+        },
+      },
+    },
+  });
+
+  for (const { id } of events) {
+    await Factory.update(user, userId, {
+      events: {
+        create: {
+          role: ROLES.guest,
+          event: {
+            connect: { id },
+          },
+        },
+      },
+    });
+  }
 
   res.sendStatus(204);
 };
