@@ -1,5 +1,7 @@
 import { Avatar, Button, Flex, Text, useDisclosure } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
+import { AddIcon } from '@chakra-ui/icons';
+import { Link as RouterLink } from 'react-router-dom';
 import MyCalendars from '~/components/Calendar/MyCalendars/MyCalendars';
 import useCustomToast from '~/hooks/use-custom-toast.js';
 import { useLogoutMutation } from '~/store/api/authSlice.js';
@@ -24,7 +26,14 @@ const Sidebar = ({ calendars, setFilter }) => {
     <Flex sx={styles.sidebar} borderColor="gray.200">
       <Flex sx={styles.container}>
         <Flex>
-          <Button sx={styles.btn} bg="yellow.400" size="lg">
+          <Button
+            leftIcon={<AddIcon />}
+            as={RouterLink}
+            to="/createEvent"
+            colorScheme="green"
+            variant="outline"
+            size="lg"
+          >
             Create an event
           </Button>
         </Flex>
