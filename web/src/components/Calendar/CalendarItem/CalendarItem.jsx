@@ -6,11 +6,13 @@ import useCustomToast from '~/hooks/use-custom-toast';
 import styles from './calendar-item.styles';
 import UpdateCalendarModal from '~/components/Modal/UpdateCalendarModal';
 import CustomPopover from '~/components/CustomPopover/CustomPopover';
+import ConfirmPopover from '~/components/CustomPopover/ConfirmPopover';
 
 const CalendarItem = ({ calendar, formik, setFilter }) => {
   const { id, name, role, description } = calendar;
   const { values, handleChange } = formik;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: popoverOpen, onOpen: onPopoverOpen, onClose: onPopoverClose } = useDisclosure();
   const [deleteCalendar, { isLoading }] = useDeleteCalendarMutation();
 
   const { toast } = useCustomToast();
@@ -44,13 +46,21 @@ const CalendarItem = ({ calendar, formik, setFilter }) => {
       </Checkbox>
       {HAS_ADMIN_RIGHTS(role) && (
         <>
-          <IconButton
-            onClick={deleteHandler}
-            sx={styles.icon}
-            variant="ghost"
-            size="sm"
-            icon={<CloseIcon />}
-            isLoading={isLoading}
+          <ConfirmPopover
+            header="Are you sure you want to remove this calendar?"
+            trigger={
+              <IconButton
+                onClick={onPopoverOpen}
+                sx={styles.icon}
+                variant="ghost"
+                size="sm"
+                icon={<CloseIcon />}
+                isLoading={isLoading}
+              />
+            }
+            isOpen={popoverOpen}
+            onConfirm={deleteHandler}
+            onClose={onPopoverClose}
           />
           <IconButton
             onClick={onOpen}
