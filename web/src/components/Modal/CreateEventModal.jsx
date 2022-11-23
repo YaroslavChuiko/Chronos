@@ -6,7 +6,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react';
-import CreateEventTabs from './CreateEventTabs';
+import CreateEventTabs from '../Tabs/CreateEventTabs';
 
 const CreateEventModal = ({ isOpen, onClose, selectedDate }) => {
   return (
