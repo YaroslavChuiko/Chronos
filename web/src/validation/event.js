@@ -19,3 +19,12 @@ export const taskSchema = Yup.object().shape({
   date: Yup.date().required(),
   type: Yup.string().required().oneOf(Object.values(EVENT_TYPE_ENUM)),
 });
+
+export const reminderSchema = Yup.object().shape({
+  calendar: Yup.string().required('Calendar is requierd!'),
+  name: Yup.string().required().min(EVENT_NAME_LENGTH.min).max(EVENT_NAME_LENGTH.max),
+  content: Yup.string(),
+  color: Yup.string().matches(COLOR_PATTERN),
+  start: Yup.date().required(),
+  type: Yup.string().required().oneOf(Object.values(EVENT_TYPE_ENUM)),
+});
