@@ -27,7 +27,10 @@ const getCalendarEvents = async (req, res) => {
   const events = await event.findMany({
     where: {
       users: {
-        some: { user: { id: userId } },
+        some: {
+          user: { id: userId },
+          isConfirmed: true,
+        },
       },
       ...filters,
     },
@@ -165,7 +168,7 @@ const shareEvent = async (req, res) => {
     },
   });
   if (exists) {
-    throw new ServerError(400, 'This user already has access to the calendar.');
+    throw new ServerError(400, 'This user already has access to the event.');
   }
 
   await user.update({

@@ -20,6 +20,7 @@ const getCalendars = async (req, res) => {
       users: {
         some: {
           user: { id },
+          isConfirmed: true,
           ...filters,
         },
       },
