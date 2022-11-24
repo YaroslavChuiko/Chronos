@@ -1,26 +1,23 @@
-import { Button } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link as RouterLink, Outlet } from 'react-router-dom';
-import PageAlert from '../PageAlert/PageAlert';
+import { Navigate, Outlet } from 'react-router-dom';
+import useCustomToast from '~/hooks/use-custom-toast';
 
 const ProtectedRoute = () => {
   const { user } = useSelector((state) => state.auth);
+  const { toast } = useCustomToast();
+
+  useEffect(() => {
+    if (!user.id) {
+      toast('You do not have access to this page.', 'error');
+    }
+  }, [user.id, toast]);
 
   if (user.id) {
     return <Outlet />;
   }
 
-  return (
-    <PageAlert
-      status="warning"
-      title="403 - Access denied!"
-      message="You don't have permission to access this page."
-    >
-      <Button colorScheme="orange" as={RouterLink} to="/login">
-        Login
-      </Button>
-    </PageAlert>
-  );
+  return <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;
