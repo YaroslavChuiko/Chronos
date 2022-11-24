@@ -29,9 +29,8 @@ const Sidebar = ({ calendars, setFilter }) => {
           <Button
             leftIcon={<AddIcon />}
             as={RouterLink}
-            to="/createEvent"
+            to="/create-event"
             colorScheme="green"
-            variant="outline"
             size="lg"
           >
             Create an event

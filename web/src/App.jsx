@@ -32,7 +32,7 @@ const App = () => {
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<CalendarPage />} />
-          <Route path="/createEvent" element={<CreateEvent />} />
+          <Route path="/create-event" element={<CreateEvent />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
