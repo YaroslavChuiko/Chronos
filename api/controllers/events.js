@@ -229,8 +229,9 @@ const confirmEvent = async (req, res) => {
 
 const getInvitedUsers = async (req, res) => {
   const id = Number(req.params.id);
+  const userId = req.user.id;
 
-  await Factory.exists(event, { id });
+  await checkEventAction(id, userId, Object.values(ROLES));
 
   const users = await user.findMany({
     where: {
@@ -238,6 +239,26 @@ const getInvitedUsers = async (req, res) => {
         some: {
           isConfirmed: false,
           event: { id },
+        },
+      },
+    },
+    select: { id: true, email: true },
+  });
+
+  res.json(users);
+};
+
+const getNotInvitedUsers = async (req, res) => {
+  const id = Number(req.params.id);
+  const userId = req.user.id;
+
+  await checkEventAction(id, userId, Object.values(ROLES));
+
+  const users = await user.findMany({
+    where: {
+      NOT: {
+        events: {
+          some: { eventId: id },
         },
       },
     },
@@ -255,4 +276,5 @@ module.exports = {
   shareEvent,
   confirmEvent,
   getInvitedUsers,
+  getNotInvitedUsers,
 };

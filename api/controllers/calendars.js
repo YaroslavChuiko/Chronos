@@ -131,7 +131,7 @@ const getInvitedUsers = async (req, res) => {
   const id = Number(req.params.id);
   const userId = req.user.id;
 
-  await Factory.exists(calendar, { id });
+  await checkCalendarAction(id, userId, Object.values(ROLES));
 
   const users = await user.findMany({
     where: {
@@ -166,8 +166,9 @@ const getInvitedUsers = async (req, res) => {
 
 const getNotInvitedUsers = async (req, res) => {
   const id = Number(req.params.id);
+  const userId = req.user.id;
 
-  await Factory.exists(calendar, { id });
+  await checkCalendarAction(id, userId, Object.values(ROLES));
 
   const users = await user.findMany({
     where: {
