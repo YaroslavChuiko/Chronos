@@ -197,7 +197,7 @@ const shareCalendar = async (req, res) => {
   await Factory.update(user, userId, {
     calendars: {
       create: {
-        role: ROLES.guest,
+        role: ROLES.moderator,
         isConfirmed: false,
         calendar: {
           connect: { id: calendarId },
@@ -238,18 +238,20 @@ const confirmCalendar = async (req, res) => {
     },
   });
 
-  for (const { id } of events) {
-    await Factory.update(user, userId, {
-      events: {
-        create: {
-          role: ROLES.guest,
-          event: {
-            connect: { id },
+  await Promise.all(
+    events.map(({ id }) =>
+      Factory.update(user, userId, {
+        events: {
+          create: {
+            role: ROLES.guest,
+            event: {
+              connect: { id },
+            },
           },
         },
-      },
-    });
-  }
+      }),
+    ),
+  );
 
   res.sendStatus(204);
 };

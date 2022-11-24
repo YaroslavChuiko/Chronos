@@ -79,6 +79,32 @@ const createEvent = async (req, res) => {
     },
   });
 
+  const users = await user.findMany({
+    where: {
+      AND: {
+        calendars: {
+          some: { calendarId },
+        },
+        NOT: { id: userId },
+      },
+    },
+  });
+
+  await Promise.all(
+    users.map(({ id }) =>
+      Factory.update(event, newEvent.id, {
+        users: {
+          create: {
+            role: ROLES.guest,
+            user: {
+              connect: { id },
+            },
+          },
+        },
+      }),
+    ),
+  );
+
   res.status(201).json(newEvent);
 };
 
