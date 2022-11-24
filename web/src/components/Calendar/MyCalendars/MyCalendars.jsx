@@ -19,7 +19,7 @@ import styles from './my-calendars.styles';
 const MyCalendars = ({ calendars, setFilter }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { values, handleChange } = useFormik({
+  const { values, handleChange, setFieldValue } = useFormik({
     initialValues: {
       calendars: initialCalendars(calendars),
       holidays: true,
@@ -58,9 +58,9 @@ const MyCalendars = ({ calendars, setFilter }) => {
           <CalendarItem
             key={c.id}
             calendar={c}
-            setFilter={setFilter}
             formik={{
               handleChange,
+              setFieldValue,
               values,
             }}
           />

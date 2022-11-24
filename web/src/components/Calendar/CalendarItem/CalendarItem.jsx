@@ -8,9 +8,9 @@ import UpdateCalendarModal from '~/components/Modal/UpdateCalendarModal';
 import CustomPopover from '~/components/CustomPopover/CustomPopover';
 import ConfirmPopover from '~/components/CustomPopover/ConfirmPopover';
 
-const CalendarItem = ({ calendar, formik, setFilter }) => {
+const CalendarItem = ({ calendar, formik }) => {
   const { id, name, role, description } = calendar;
-  const { values, handleChange } = formik;
+  const { values, handleChange, setFieldValue } = formik;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: popoverOpen, onOpen: onPopoverOpen, onClose: onPopoverClose } = useDisclosure();
   const [deleteCalendar, { isLoading }] = useDeleteCalendarMutation();
@@ -20,10 +20,10 @@ const CalendarItem = ({ calendar, formik, setFilter }) => {
   const deleteHandler = async () => {
     try {
       await deleteCalendar(id);
-      setFilter((state) => ({
-        ...state,
-        calendars: state.calendars.filter((key) => Number(key) !== id),
-      }));
+      const calendars = Object.fromEntries(
+        Object.entries(values.calendars).filter(([k]) => Number(k) !== id),
+      );
+      setFieldValue('calendars', calendars);
       toast('Your calendar was successfully removed!', 'success');
     } catch (err) {
       toast(err.data.message, 'error');

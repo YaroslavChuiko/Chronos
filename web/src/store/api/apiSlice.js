@@ -68,7 +68,7 @@ export const apiSlice = createApi({
         url: `/calendars/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Calendars', 'Events'],
+      invalidatesTags: ['Calendars'],
     }),
     shareCalendar: builder.mutation({
       query: ({ id, email }) => ({
