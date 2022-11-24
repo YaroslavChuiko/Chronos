@@ -5,10 +5,10 @@ services:
     image: mysql:5.7
     env_file: ./.env
     environment:
-      - MYSQL_USER=$DB_USER
-      - MYSQL_PASSWORD=$DB_PASSWORD
-      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
-      - MYSQL_DATABASE=$DB_NAME
+      - MYSQL_USER=mysql_user
+      - MYSQL_PASSWORD=mysql_user
+      - MYSQL_ROOT_PASSWORD=mysql_user
+      - MYSQL_DATABASE=chronos
     ports:
       - $DB_LOCAL_PORT:$DB_DOCKER_PORT
     volumes:
@@ -30,7 +30,7 @@ services:
       - $SERVER_PORT:$SERVER_PORT
     environment:
       - DB_HOST=mysqldb
-      - DATABASE_URL=mysql://pbalazhy:pbalazhy135091@mysqldb:3306/chronos
+      - DATABASE_URL=mysql://mysql_user:mysql_user@mysqldb:3306/chronos
     stdin_open: true
     tty: true
 
