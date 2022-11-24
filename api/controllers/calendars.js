@@ -111,6 +111,14 @@ const deleteCalendar = async (req, res) => {
 
   await checkCalendarAction(calendarId, userId, [ROLES.admin]);
 
+  await event.deleteMany({
+    where: {
+      calendars: {
+        some: { calendarId },
+      },
+    },
+  });
+
   const deletedCalendar = await calendar.delete({
     where: { id: calendarId },
   });
