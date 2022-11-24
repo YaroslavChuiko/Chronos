@@ -34,15 +34,15 @@ services:
     stdin_open: true
     tty: true
 
-  # web:
-  #   depends_on:
-  #     - api
-  #   build: ../web
-  #   ports:
-  #     - '3000:3000'
-  #   env_file: ../web/.env.local
-  #   stdin_open: true
-  #   tty: true
+  web:
+    # depends_on:
+    #   - api
+    build: ../web
+    ports:
+      - '3000:3000'
+    env_file: ../web/.env.local
+    stdin_open: true
+    tty: true
 
 volumes:
   db:
