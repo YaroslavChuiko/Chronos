@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useGetCalendarEventsQuery } from '~/store/api/apiSlice';
-import { toDate } from '~/utils/date';
 
 const useGetEvents = ({ calendars, types }) => {
   const [events, setEvents] = useState([]);
@@ -10,8 +9,8 @@ const useGetEvents = ({ calendars, types }) => {
     if (data) {
       const response = data.map(({ name, start, end, ...e }) => ({
         title: name,
-        start: toDate(start),
-        end: toDate(end),
+        start: start,
+        end: end,
         ...e,
       }));
       setEvents(response);
