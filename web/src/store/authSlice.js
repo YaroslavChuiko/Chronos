@@ -15,18 +15,6 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // setUser(state, { payload }) {
-    //   state.user = payload;
-    // },
-    // unsetUser(state, _) {
-    //   state.user = initialState.user;
-    // },
-    // setToken(state, { payload }) {
-    //   const { accessToken } = payload;
-    //   state.accessToken = accessToken;
-    //   LocalStorage.setItem('accessToken', accessToken);
-    // },
-
     setCredentials(state, { payload }) {
       const { accessToken } = payload;
       state.accessToken = accessToken;
