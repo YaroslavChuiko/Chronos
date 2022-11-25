@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useGetUsersQuery } from '~/store/api/apiSlice';
 
-const useGetUsers = (calendarId) => {
+const useGetUsers = (id, query) => {
   const [users, setUsers] = useState([]);
-  const { data, isLoading } = useGetUsersQuery(calendarId);
+  const { data, isLoading } = query(id);
 
   useEffect(() => {
     if (data) {

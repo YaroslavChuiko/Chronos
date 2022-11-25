@@ -5,7 +5,15 @@ import baseQueryWithReauth from './baseQueryWithReauth';
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Calendars', 'Holidays', 'Events', 'Invited', 'Users'],
+  tagTypes: [
+    'Calendars',
+    'Holidays',
+    'Events',
+    'CalendarInvited',
+    'CalendarUsers',
+    'EventInvited',
+    'EventUsers',
+  ],
   endpoints: (builder) => ({
     getCalendars: builder.query({
       query: ({ roles } = { roles: [] }) => ({
@@ -91,21 +99,37 @@ export const apiSlice = createApi({
         method: 'POST',
         body: { email },
       }),
-      invalidatesTags: ['Invited', 'Users'],
+      invalidatesTags: ['CalendarInvited', 'CalendarUsers'],
     }),
     getCalendarInvited: builder.query({
       query: (id) => `/calendars/${id}/invited`,
-      providesTags: ['Invited'],
+      providesTags: ['CalendarInvited'],
     }),
-    getUsers: builder.query({
+    getCalendarUsers: builder.query({
       query: (id) => `/calendars/${id}/users`,
-      providesTags: ['Users'],
+      providesTags: ['CalendarUsers'],
     }),
     confirmCalendar: builder.mutation({
       query: ({ confirmToken }) => ({
         url: `/calendars/invite-confirm/${confirmToken}`,
         method: 'POST',
       }),
+    }),
+    shareEvent: builder.mutation({
+      query: ({ id, email }) => ({
+        url: `events/${id}/invite`,
+        method: 'POST',
+        body: { email },
+      }),
+      invalidatesTags: ['EventInvited', 'EventUsers'],
+    }),
+    getEventInvited: builder.query({
+      query: (id) => `/events/${id}/invited`,
+      providesTags: ['EventInvited'],
+    }),
+    getEventUsers: builder.query({
+      query: (id) => `/events/${id}/users`,
+      providesTags: ['EventUsers'],
     }),
     confirmEvent: builder.mutation({
       query: ({ confirmToken }) => ({
@@ -128,7 +152,10 @@ export const {
   useDeleteCalendarMutation,
   useShareCalendarMutation,
   useGetCalendarInvitedQuery,
-  useGetUsersQuery,
+  useGetCalendarUsersQuery,
   useConfirmCalendarMutation,
   useConfirmEventMutation,
+  useShareEventMutation,
+  useGetEventUsersQuery,
+  useGetEventInvitedQuery,
 } = apiSlice;

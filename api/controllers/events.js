@@ -240,17 +240,33 @@ const getInvitedUsers = async (req, res) => {
 
   const users = await user.findMany({
     where: {
+      id: { not: userId },
       events: {
         some: {
-          isConfirmed: false,
           event: { id },
         },
       },
     },
-    select: { id: true, email: true },
+    include: {
+      events: {
+        where: { eventId: id },
+        select: { isConfirmed: true },
+      },
+    },
   });
 
-  res.json(users);
+  const result = users.reduce(
+    (prev, { events, password, ...curr }) => [
+      ...prev,
+      {
+        ...curr,
+        isConfirmed: events[0].isConfirmed,
+      },
+    ],
+    [],
+  );
+
+  res.json(result);
 };
 
 const getNotInvitedUsers = async (req, res) => {

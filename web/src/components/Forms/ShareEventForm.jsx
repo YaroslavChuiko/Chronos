@@ -15,16 +15,16 @@ import { useFormik } from 'formik';
 import useCustomToast from '~/hooks/use-custom-toast';
 import useGetUsers from '~/hooks/use-get-users';
 import {
-  useGetCalendarInvitedQuery,
-  useGetCalendarUsersQuery,
-  useShareCalendarMutation,
+  useGetEventInvitedQuery,
+  useGetEventUsersQuery,
+  useShareEventMutation,
 } from '~/store/api/apiSlice';
 import Loader from '../Loader/Loader';
 
-const ShareCalendarForm = ({ calendar: { id } }) => {
-  const { users } = useGetUsers(id, useGetCalendarUsersQuery);
-  const { data: invited, isLoading: invitedLoading } = useGetCalendarInvitedQuery(id);
-  const [share, { isLoading }] = useShareCalendarMutation();
+const ShareEventForm = ({ id }) => {
+  const { users } = useGetUsers(id, useGetEventUsersQuery);
+  const { data: invited, isLoading: invitedLoading } = useGetEventInvitedQuery(id);
+  const [share, { isLoading }] = useShareEventMutation();
   const { toast } = useCustomToast();
 
   const { values, handleChange, handleBlur, handleSubmit, resetForm } = useFormik({
@@ -33,7 +33,7 @@ const ShareCalendarForm = ({ calendar: { id } }) => {
       try {
         await share({ id, email });
         resetForm();
-        toast(`An invite to this calendar was sent to ${email}.`, 'success');
+        toast(`An invite to this event was sent to ${email}.`, 'success');
       } catch (err) {
         toast(err.data.message, 'error');
       }
@@ -44,7 +44,7 @@ const ShareCalendarForm = ({ calendar: { id } }) => {
     <VStack spacing={4} sx={{ width: '100%' }}>
       {invited && invited.length ? (
         <>
-          <Text sx={{ fontWeight: 'semibold', width: '100%' }}>The calendar is shared with:</Text>
+          <Text sx={{ fontWeight: 'semibold', width: '100%' }}>The event is shared with:</Text>
           <List spacing={3} sx={{ width: '100%' }}>
             {invited.map((u) => (
               <ListItem key={u.id}>
@@ -61,7 +61,7 @@ const ShareCalendarForm = ({ calendar: { id } }) => {
       )}
       <Flex sx={{ alignItems: 'flex-end', width: '100%' }}>
         <FormControl>
-          <FormLabel htmlFor="email">Share your calendar</FormLabel>
+          <FormLabel htmlFor="email">Share this event</FormLabel>
           <Select
             id="email"
             name="email"
@@ -97,4 +97,4 @@ const ShareCalendarForm = ({ calendar: { id } }) => {
   );
 };
 
-export default ShareCalendarForm;
+export default ShareEventForm;
