@@ -14,6 +14,7 @@ import useGetHolidays from '~/hooks/use-get-holidays';
 import { colors } from '~/consts/theme';
 import useGetEvents from '~/hooks/use-get-events';
 import CreateEventModal from '~/components/Modal/CreateEventModal';
+import EventModal from '~/components/Modal/EventModal';
 
 const CalendarPage = () => {
   const [calendars, setCalendars] = useState([]);
@@ -30,9 +31,6 @@ const CalendarPage = () => {
     types: filter.types,
   });
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedDate, setSelectedDate] = useState('');
-
   useEffect(() => {
     if (data) {
       setCalendars(data);
@@ -43,6 +41,30 @@ const CalendarPage = () => {
     setEventData([...events, ...holidays]);
   }, [events, holidays]);
 
+  const {
+    isOpen: isCreateEventOpen,
+    onOpen: onCreateEventOpen,
+    onClose: onCreateEventClose,
+  } = useDisclosure();
+  const [selectedDate, setSelectedDate] = useState('');
+
+  const onDateClick = (info) => {
+    setSelectedDate(info.dateStr);
+    onCreateEventOpen();
+  };
+
+  const {
+    isOpen: isShowEventOpen,
+    onOpen: onShowEventOpen,
+    onClose: onShowEventClose,
+  } = useDisclosure();
+  const [selectedEvent, setSelectedEvent] = useState({});
+
+  const onEventClick = (info) => {
+    setSelectedEvent(info);
+    onShowEventOpen();
+  };
+
   const error = cError || hError || eError;
   if (error) {
     return <PageAlert status="error" message={error.data.message} />;
@@ -52,14 +74,6 @@ const CalendarPage = () => {
     return <Loader />;
   }
 
-  const onDateClick = (info) => {
-    setSelectedDate(info.dateStr);
-    onOpen();
-    // alert('Clicked on: ' + info.dateStr);
-    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-    // alert('Current view: ' + info.view.type);
-  };
-
   return (
     <Flex sx={styles.container}>
       <Sidebar setFilter={setFilter} calendars={calendars} />
@@ -67,13 +81,19 @@ const CalendarPage = () => {
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           dateClick={onDateClick}
+          eventClick={onEventClick}
           initialView={OPTIONS.initialView}
           headerToolbar={OPTIONS.toolbar}
           events={eventData}
           eventBackgroundColor={colors.yellow[400]}
           eventBorderColor={colors.yellow[400]}
         />
-        <CreateEventModal isOpen={isOpen} onClose={onClose} selectedDate={selectedDate} />
+        <CreateEventModal
+          isOpen={isCreateEventOpen}
+          onClose={onCreateEventClose}
+          selectedDate={selectedDate}
+        />
+        <EventModal isOpen={isShowEventOpen} onClose={onShowEventClose} eventInfo={selectedEvent} />
       </Flex>
     </Flex>
   );
