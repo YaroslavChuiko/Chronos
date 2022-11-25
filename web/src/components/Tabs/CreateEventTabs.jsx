@@ -1,33 +1,11 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { useGetCalendarsQuery } from '~/store/api/apiSlice';
-import ArrangementForm from '../Forms/ArrangementForm';
-import ReminderForm from '../Forms/ReminderForm';
-import TaskForm from '../Forms/TaskForm';
+import CreateArrangementForm from '../Forms/CreateArrangementForm';
+import CreateReminderForm from '../Forms/CreateReminderForm';
+import CreateTaskForm from '../Forms/CreateTaskForm';
 
 const CreateEventTabs = ({ onSuccess = null, selectedDate = null }) => {
-  const [userCalendars, setUserCalendars] = useState([]);
-
-  const { data } = useGetCalendarsQuery({ roles: ['admin', 'moderator'] });
-
-  useEffect(() => {
-    if (data) {
-      setUserCalendars(data);
-    }
-  }, [data]);
-
-  const arrangementValues = {
-    start: selectedDate ? `${selectedDate}T06:00` : '',
-    end: selectedDate ? `${selectedDate}T10:00` : '',
-  };
-
-  const taskValues = {
-    date: selectedDate || '',
-  };
-
-  const reminderValues = {
-    start: selectedDate ? `${selectedDate}T10:00` : '',
-  };
+  const { data: userCalendars = [] } = useGetCalendarsQuery({ roles: ['admin', 'moderator'] });
 
   return (
     <Tabs>
@@ -39,23 +17,23 @@ const CreateEventTabs = ({ onSuccess = null, selectedDate = null }) => {
 
       <TabPanels>
         <TabPanel>
-          <ArrangementForm
+          <CreateArrangementForm
             onSuccess={onSuccess}
-            updatedValues={arrangementValues}
+            selectedDate={selectedDate}
             userCalendars={userCalendars}
           />
         </TabPanel>
         <TabPanel>
-          <TaskForm
+          <CreateTaskForm
             onSuccess={onSuccess}
-            updatedValues={taskValues}
+            selectedDate={selectedDate}
             userCalendars={userCalendars}
           />
         </TabPanel>
         <TabPanel>
-          <ReminderForm
+          <CreateReminderForm
             onSuccess={onSuccess}
-            updatedValues={reminderValues}
+            selectedDate={selectedDate}
             userCalendars={userCalendars}
           />
         </TabPanel>
