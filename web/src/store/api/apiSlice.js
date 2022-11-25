@@ -47,6 +47,21 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Events'],
     }),
+    updateCalendarEvent: builder.mutation({
+      query: ({ calendarId, eventId, name, content, color, start, end }) => ({
+        url: `/calendars/${calendarId}/events/${eventId}`,
+        method: 'PATCH',
+        body: { name, content, color, start: moment(start).format(), end: moment(end).format() },
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: 'Events', id: arg.eventId }],
+    }),
+    deleteCalendarEvent: builder.mutation({
+      query: ({ calendarId, eventId }) => ({
+        url: `/calendars/${calendarId}/events/${eventId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Events'],
+    }),
     createCalendar: builder.mutation({
       query: (body) => ({
         url: `/calendars`,
@@ -94,6 +109,8 @@ export const {
   useLazyGetHolidaysQuery,
   useGetCalendarEventsQuery,
   useCreateCalendarEventMutation,
+  useUpdateCalendarEventMutation,
+  useDeleteCalendarEventMutation,
   useCreateCalendarMutation,
   useUpdateCalendarMutation,
   useDeleteCalendarMutation,
