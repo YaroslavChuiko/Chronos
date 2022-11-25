@@ -65,6 +65,11 @@ const createEvent = async (req, res) => {
 
   await checkCalendarAction(calendarId, userId, [admin, moderator]);
 
+  if (!data.color) {
+    const { color } = await Factory.findOne(calendar, calendarId);
+    data.color = color;
+  }
+
   const newEvent = await event.create({
     data: {
       ...data,
