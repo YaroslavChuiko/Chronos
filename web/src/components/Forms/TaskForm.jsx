@@ -8,80 +8,36 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import { useFormik } from 'formik';
-import useCustomToast from '~/hooks/use-custom-toast';
-import { useCreateCalendarEventMutation } from '~/store/api/apiSlice';
-import { taskSchema } from '~/validation/event';
 
-const initialValues = {
-  calendar: '',
-  name: '',
-  content: '',
-  date: '',
-  color: '#8eaaaa',
-  type: 'task',
-};
-
-const TaskForm = ({ onSuccess = null, updatedValues, userCalendars }) => {
-  const [createEvent, { isLoading }] = useCreateCalendarEventMutation();
-  const { toast } = useCustomToast();
-
-  const formValues = { ...initialValues, ...updatedValues };
-
-  const close = () => {
-    resetForm();
-    onSuccess && onSuccess();
-  };
-
-  const onSubmit = async ({ calendar, name, content, date, color, type }) => {
-    try {
-      const data = {
-        calendar,
-        name,
-        content,
-        color,
-        type,
-        start: `${date}T02:00`, // database save as 00:00
-        end: `${date}T24:00`, // database save as 22:00
-      };
-      await createEvent(data).unwrap();
-      close();
-      toast('Your event was successfully created!', 'success');
-    } catch (error) {
-      toast(error.data.message, 'error');
-    }
-  };
-
-  const { values, touched, errors, handleChange, handleBlur, handleSubmit, resetForm } = useFormik({
-    initialValues: formValues,
-    validationSchema: taskSchema,
-    onSubmit,
-  });
+const TaskForm = ({ formik, isLoading, userCalendars = null }) => {
+  const { values, errors, touched, handleSubmit, handleChange, handleBlur } = formik;
 
   return (
     <form onSubmit={handleSubmit}>
       <VStack spacing={4}>
-        <FormControl isInvalid={!!errors.calendar && touched.calendar} isRequired>
-          <FormLabel htmlFor="calendar">Calendar</FormLabel>
-          <Select
-            id="calendar"
-            name="calendar"
-            value={values.calendar}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            variant="filled"
-            autoFocus
-            focusBorderColor="teal.400"
-            placeholder="Select a calendar"
-          >
-            {userCalendars.map((calendar) => (
-              <option key={calendar.id} value={calendar.id}>
-                {calendar.name}
-              </option>
-            ))}
-          </Select>
-          <FormErrorMessage>{errors.calendar}</FormErrorMessage>
-        </FormControl>
+        {userCalendars && (
+          <FormControl isInvalid={!!errors.calendar && touched.calendar} isRequired>
+            <FormLabel htmlFor="calendar">Calendar</FormLabel>
+            <Select
+              id="calendar"
+              name="calendar"
+              value={values.calendar}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              variant="filled"
+              autoFocus
+              focusBorderColor="teal.400"
+              placeholder="Select a calendar"
+            >
+              {userCalendars.map((calendar) => (
+                <option key={calendar.id} value={calendar.id}>
+                  {calendar.name}
+                </option>
+              ))}
+            </Select>
+            <FormErrorMessage>{errors.calendar}</FormErrorMessage>
+          </FormControl>
+        )}
         <FormControl isInvalid={!!errors.name && touched.name} isRequired>
           <FormLabel htmlFor="name">Title</FormLabel>
           <Input
