@@ -5,6 +5,7 @@ const ServerError = require('~/helpers/server-error');
 const { event, calendarEvents, userEvents, user, calendar } = require('~/lib/prisma');
 const { Token, Email, Factory } = require('~/services');
 const { getEventFilters, splitParams: split } = require('~/helpers/filtering');
+const { reduceToConfirmed } = require('~/helpers/utils');
 
 const getCalendarEvents = async (req, res) => {
   const userId = req.user.id;
@@ -40,15 +41,20 @@ const getCalendarEvents = async (req, res) => {
           calendarId: { in: calendarIDs },
         },
       },
+      users: {
+        select: { role: true },
+        where: { userId },
+      },
     },
   });
 
   const result = events.reduce(
-    (prev, { calendars, ...curr }) => [
+    (prev, { users, calendars, ...curr }) => [
       ...prev,
       {
         ...curr,
         calendarId: calendars[0].calendarId,
+        role: users[0].role,
       },
     ],
     [],
@@ -255,16 +261,7 @@ const getInvitedUsers = async (req, res) => {
     },
   });
 
-  const result = users.reduce(
-    (prev, { events, password, ...curr }) => [
-      ...prev,
-      {
-        ...curr,
-        isConfirmed: events[0].isConfirmed,
-      },
-    ],
-    [],
-  );
+  const result = reduceToConfirmed(users, 'events');
 
   res.json(result);
 };

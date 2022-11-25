@@ -6,6 +6,7 @@ const { checkCalendarAction, checkCalendarName } = require('~/helpers/action-che
 const { splitParams, getCalendarFilters } = require('~/helpers/filtering');
 const { getHolidaysByIP } = require('~/helpers/holiday-api');
 const ServerError = require('~/helpers/server-error');
+const { reduceToRole, reduceToConfirmed } = require('~/helpers/utils');
 const { calendar, user, userCalendars, event } = require('~/lib/prisma');
 const { Factory, Email, Token } = require('~/services');
 
@@ -33,16 +34,7 @@ const getCalendars = async (req, res) => {
     },
   });
 
-  const result = calendars.reduce(
-    (prev, { users, ...curr }) => [
-      ...prev,
-      {
-        ...curr,
-        role: users[0].role,
-      },
-    ],
-    [],
-  );
+  const result = reduceToRole(calendars);
 
   res.json(result);
 };
@@ -150,16 +142,7 @@ const getInvitedUsers = async (req, res) => {
     },
   });
 
-  const result = users.reduce(
-    (prev, { calendars, password, ...curr }) => [
-      ...prev,
-      {
-        ...curr,
-        isConfirmed: calendars[0].isConfirmed,
-      },
-    ],
-    [],
-  );
+  const result = reduceToConfirmed(users, 'calendars');
 
   res.json(result);
 };
