@@ -10,6 +10,7 @@ const EventModal = ({ isOpen, onClose, eventInfo }) => {
   const calendarId = eventInfo.event?._def.extendedProps.calendarId;
   const eventId = eventInfo.event?.id;
   const eventType = eventInfo.event?._def.extendedProps.type;
+  const userRole = eventInfo.event?._def.extendedProps.role;
 
   return (
     <CustomModal
@@ -24,6 +25,7 @@ const EventModal = ({ isOpen, onClose, eventInfo }) => {
           onClose={onClose}
           calendarId={calendarId}
           eventId={eventId}
+          userRole={userRole}
         />
       )}
 

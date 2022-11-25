@@ -5,7 +5,14 @@ import { useDeleteCalendarEventMutation } from '~/store/api/apiSlice';
 import ConfirmPopover from '../CustomPopover/ConfirmPopover';
 import ShareEventForm from '~/components/Forms/ShareEventForm';
 
-const EventModalControls = ({ isEditMode, setIsEditMode, onClose, calendarId, eventId }) => {
+const EventModalControls = ({
+  isEditMode,
+  setIsEditMode,
+  onClose,
+  calendarId,
+  eventId,
+  userRole,
+}) => {
   const { isOpen: popoverOpen, onOpen: onPopoverOpen, onClose: onPopoverClose } = useDisclosure();
   const [deleteEvent, { isLoading }] = useDeleteCalendarEventMutation();
 
@@ -29,12 +36,14 @@ const EventModalControls = ({ isEditMode, setIsEditMode, onClose, calendarId, ev
   return (
     <Flex mb="20px" sx={{ flexDir: 'column', alignItems: 'flex-start' }}>
       <Flex>
-        <IconButton
-          variant="ghost"
-          colorScheme="blackAlpha"
-          icon={isEditMode ? <ViewIcon /> : <EditIcon />}
-          onClick={onEditClick}
-        />
+        {userRole === 'admin' && (
+          <IconButton
+            variant="ghost"
+            colorScheme="blackAlpha"
+            icon={isEditMode ? <ViewIcon /> : <EditIcon />}
+            onClick={onEditClick}
+          />
+        )}
         <ConfirmPopover
           header="Are you sure you want to remove this event?"
           trigger={
@@ -51,7 +60,7 @@ const EventModalControls = ({ isEditMode, setIsEditMode, onClose, calendarId, ev
           onClose={onPopoverClose}
         />
       </Flex>
-      <ShareEventForm id={eventId} />
+      {userRole === 'admin' && <ShareEventForm id={eventId} />}
     </Flex>
   );
 };
