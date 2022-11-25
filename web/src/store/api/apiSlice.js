@@ -83,7 +83,7 @@ export const apiSlice = createApi({
         url: `/calendars/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Calendars', 'Events'],
+      invalidatesTags: ['Calendars'],
     }),
     shareCalendar: builder.mutation({
       query: ({ id, email }) => ({
@@ -101,6 +101,18 @@ export const apiSlice = createApi({
       query: (id) => `/calendars/${id}/users`,
       providesTags: ['Users'],
     }),
+    confirmCalendar: builder.mutation({
+      query: ({ confirmToken }) => ({
+        url: `/calendars/invite-confirm/${confirmToken}`,
+        method: 'POST',
+      }),
+    }),
+    confirmEvent: builder.mutation({
+      query: ({ confirmToken }) => ({
+        url: `/events/invite-confirm/${confirmToken}`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -117,4 +129,6 @@ export const {
   useShareCalendarMutation,
   useGetCalendarInvitedQuery,
   useGetUsersQuery,
+  useConfirmCalendarMutation,
+  useConfirmEventMutation,
 } = apiSlice;

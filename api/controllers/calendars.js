@@ -6,7 +6,7 @@ const { checkCalendarAction, checkCalendarName } = require('~/helpers/action-che
 const { splitParams, getCalendarFilters } = require('~/helpers/filtering');
 const { getHolidaysByIP } = require('~/helpers/holiday-api');
 const ServerError = require('~/helpers/server-error');
-const { calendar, user, userCalendars } = require('~/lib/prisma');
+const { calendar, user, userCalendars, event } = require('~/lib/prisma');
 const { Factory, Email, Token } = require('~/services');
 
 const getCalendars = async (req, res) => {
@@ -20,6 +20,7 @@ const getCalendars = async (req, res) => {
       users: {
         some: {
           user: { id },
+          isConfirmed: true,
           ...filters,
         },
       },
@@ -111,6 +112,14 @@ const deleteCalendar = async (req, res) => {
 
   await checkCalendarAction(calendarId, userId, [ROLES.admin]);
 
+  await event.deleteMany({
+    where: {
+      calendars: {
+        some: { calendarId },
+      },
+    },
+  });
+
   const deletedCalendar = await calendar.delete({
     where: { id: calendarId },
   });
@@ -122,7 +131,7 @@ const getInvitedUsers = async (req, res) => {
   const id = Number(req.params.id);
   const userId = req.user.id;
 
-  await Factory.exists(calendar, { id });
+  await checkCalendarAction(id, userId, Object.values(ROLES));
 
   const users = await user.findMany({
     where: {
@@ -157,8 +166,9 @@ const getInvitedUsers = async (req, res) => {
 
 const getNotInvitedUsers = async (req, res) => {
   const id = Number(req.params.id);
+  const userId = req.user.id;
 
-  await Factory.exists(calendar, { id });
+  await checkCalendarAction(id, userId, Object.values(ROLES));
 
   const users = await user.findMany({
     where: {
@@ -197,7 +207,7 @@ const shareCalendar = async (req, res) => {
   await Factory.update(user, userId, {
     calendars: {
       create: {
-        role: ROLES.guest,
+        role: ROLES.moderator,
         isConfirmed: false,
         calendar: {
           connect: { id: calendarId },
@@ -227,6 +237,31 @@ const confirmCalendar = async (req, res) => {
     },
     data: { isConfirmed: true },
   });
+
+  const events = await event.findMany({
+    where: {
+      calendars: {
+        some: {
+          calendarId,
+        },
+      },
+    },
+  });
+
+  await Promise.all(
+    events.map(({ id }) =>
+      Factory.update(user, userId, {
+        events: {
+          create: {
+            role: ROLES.guest,
+            event: {
+              connect: { id },
+            },
+          },
+        },
+      }),
+    ),
+  );
 
   res.sendStatus(204);
 };

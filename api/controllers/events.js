@@ -27,7 +27,10 @@ const getCalendarEvents = async (req, res) => {
   const events = await event.findMany({
     where: {
       users: {
-        some: { user: { id: userId } },
+        some: {
+          user: { id: userId },
+          isConfirmed: true,
+        },
       },
       ...filters,
     },
@@ -78,6 +81,32 @@ const createEvent = async (req, res) => {
       },
     },
   });
+
+  const users = await user.findMany({
+    where: {
+      AND: {
+        calendars: {
+          some: { calendarId },
+        },
+        NOT: { id: userId },
+      },
+    },
+  });
+
+  await Promise.all(
+    users.map(({ id }) =>
+      Factory.update(event, newEvent.id, {
+        users: {
+          create: {
+            role: ROLES.guest,
+            user: {
+              connect: { id },
+            },
+          },
+        },
+      }),
+    ),
+  );
 
   res.status(201).json(newEvent);
 };
@@ -139,7 +168,7 @@ const shareEvent = async (req, res) => {
     },
   });
   if (exists) {
-    throw new ServerError(400, 'This user already has access to the calendar.');
+    throw new ServerError(400, 'This user already has access to the event.');
   }
 
   await user.update({
@@ -200,8 +229,9 @@ const confirmEvent = async (req, res) => {
 
 const getInvitedUsers = async (req, res) => {
   const id = Number(req.params.id);
+  const userId = req.user.id;
 
-  await Factory.exists(event, { id });
+  await checkEventAction(id, userId, Object.values(ROLES));
 
   const users = await user.findMany({
     where: {
@@ -209,6 +239,26 @@ const getInvitedUsers = async (req, res) => {
         some: {
           isConfirmed: false,
           event: { id },
+        },
+      },
+    },
+    select: { id: true, email: true },
+  });
+
+  res.json(users);
+};
+
+const getNotInvitedUsers = async (req, res) => {
+  const id = Number(req.params.id);
+  const userId = req.user.id;
+
+  await checkEventAction(id, userId, Object.values(ROLES));
+
+  const users = await user.findMany({
+    where: {
+      NOT: {
+        events: {
+          some: { eventId: id },
         },
       },
     },
@@ -226,4 +276,5 @@ module.exports = {
   shareEvent,
   confirmEvent,
   getInvitedUsers,
+  getNotInvitedUsers,
 };

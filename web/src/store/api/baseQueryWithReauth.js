@@ -24,7 +24,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
         method: 'POST',
       },
       api,
-      extraOptions
+      extraOptions,
     );
     if (refreshResult.data) {
       // store the new token
@@ -35,6 +35,19 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       api.dispatch(logout());
     }
   }
+
+  if (result.error && result.error.status === 500) {
+    return {
+      ...result,
+      error: {
+        ...result.error,
+        data: {
+          message: 'A server error occurred.',
+        },
+      },
+    };
+  }
+
   return result;
 };
 
