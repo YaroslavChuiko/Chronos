@@ -7,10 +7,8 @@ const useGetEvents = ({ calendars, types }) => {
 
   useEffect(() => {
     if (data) {
-      const response = data.map(({ name, start, end, ...e }) => ({
+      const response = data.map(({ name, ...e }) => ({
         title: name,
-        start: start,
-        end: end,
         ...e,
       }));
       setEvents(response);
