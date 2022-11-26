@@ -2,11 +2,9 @@ version: '3.9'
 
 services:
   mysqldb:
-    image: mysql:5.7
+    image: mysql:8.0
     env_file: ./.env
     environment:
-      - MYSQL_USER=mysql_user
-      - MYSQL_PASSWORD=mysql_user
       - MYSQL_ROOT_PASSWORD=mysql_user
       - MYSQL_DATABASE=chronos
     ports:
@@ -14,7 +12,7 @@ services:
     volumes:
       - db:/var/lib/mysql
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u${DB_USER}', '-p${DB_PASSWORD}']
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-uroot', '-pmysql_user']
       interval: 5s
       timeout: 5s
       retries: 20
@@ -30,13 +28,13 @@ services:
       - $SERVER_PORT:$SERVER_PORT
     environment:
       - DB_HOST=mysqldb
-      - DATABASE_URL=mysql://mysql_user:mysql_user@mysqldb:3306/chronos
+      - DATABASE_URL=mysql://root:mysql_user@mysqldb:3306/chronos
     stdin_open: true
     tty: true
 
   web:
-    # depends_on:
-    #   - api
+    depends_on:
+      - api
     build: ../web
     ports:
       - '3000:3000'

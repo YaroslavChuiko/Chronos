@@ -47,7 +47,12 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { login, password } = req.body;
 
-  const found = await Factory.exists(user, { login });
+  let found = null;
+  try {
+    found = await Factory.exists(user, { login });
+  } catch (_e) {
+    throw new ServerError(400, 'The login is not valid.');
+  }
 
   const isAuthorized = await comparePasswords(password, found.password);
   if (!isAuthorized) {
