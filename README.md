@@ -31,3 +31,35 @@
 
 <br/>
 <br/>
+
+
+## Install & run
+
+[Backend](api/README.md)
+
+[Frontend](web/README.md)
+
+## Snapshots
+### Login
+![2022-12-08](https://user-images.githubusercontent.com/32570823/206441193-10bacff5-4b48-4a74-ab48-dc0050b51469.png)
+
+### Register
+![2022-12-08 (1)](https://user-images.githubusercontent.com/32570823/206441276-60b78c0d-f47e-4b7f-9752-e1365a4fb2b1.png)
+
+### Email confirmed
+![2022-12-08 (2)](https://user-images.githubusercontent.com/32570823/206441432-6160ccf6-71e0-4fb4-b424-af8330146242.png)
+
+### Home page
+![2022-12-08 (3)](https://user-images.githubusercontent.com/32570823/206441608-f5b6d31f-1c06-4c95-a16e-a926122c2137.png)
+
+### Create event page
+![2022-12-08 (4)](https://user-images.githubusercontent.com/32570823/206441785-a35aa9cb-67e4-419d-9416-c1564c8ad1dc.png)
+
+### Create calendar
+![2022-12-08 (5)](https://user-images.githubusercontent.com/32570823/206442102-1a30094c-5f88-4fa7-b086-2ae375b38172.png)
+
+### Create event
+![2022-12-08 (9)](https://user-images.githubusercontent.com/32570823/206442217-b44d01cc-94ec-4a31-9805-908e97ac6ef4.png)
+
+### Event info
+![2022-12-08 (6)](https://user-images.githubusercontent.com/32570823/206442313-48532418-efeb-4c13-b88f-b2d4931e864c.png)
