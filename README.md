@@ -37,13 +37,17 @@
 
 [Frontend](web/README.md)
 
-## Entity-Relationship Diagram
+<br/>
+
+## Entity-relationship diagram
 
 ![Untitled](https://user-images.githubusercontent.com/32570823/206445241-c92ca862-372f-471d-8055-cc6396259240.png)
 
-## Use-Case Diagram
+## Use-case diagram
 
 ![Chronos_use_case](https://user-images.githubusercontent.com/32570823/206446577-eed14758-5fc2-4398-830a-b4d40198fbfb.jpg)
+
+<br/>
 
 ## Snapshots
 ### Login
