@@ -1,4 +1,19 @@
-# Chronos-Backend
+<head>
+    <div align="center">
+        <h1 align="center">Chronos-Backend</h2>
+    </div>
+</head>
+
+<div align="center">
+  <img alt="Node.js" src="https://img.shields.io/badge/-Node.js-339933.svg?style=for-the-badge&logo=node.js&logoColor=white" />
+  <img alt="Express" src="https://img.shields.io/badge/-Express-000000.svg?style=for-the-badge&logo=express&logoColor=white" />
+  <img alt="MySQL" src="https://img.shields.io/badge/-MySQL-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white" />
+  <img alt="Prisma" src="https://img.shields.io/badge/-Prisma-2D3748.svg?style=for-the-badge&logo=prisma&logoColor=white" />
+  <img alt="JSON Web Tokens" src="https://img.shields.io/badge/-JWT-000000.svg?style=for-the-badge&logo=JSONWebTokens&logoColor=white" />
+  <img alt=".ENV" src="https://img.shields.io/badge/-.ENV-ECD53F.svg?style=for-the-badge&logo=.ENV&logoColor=black" />
+  <img alt="Nodemon" src="https://img.shields.io/badge/-Nodemon-76D04B.svg?style=for-the-badge&logo=nodemon&logoColor=white" />
+  <img alt="Docker" src="https://img.shields.io/badge/-Docker-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white" />
+</div>
 
 ## About
 
@@ -30,3 +45,7 @@ Via Docker:
 - Optionally, to run seeders, run `docker compose run --rm api node prisma/seeders`
 
 You can now access the API, using the host and port, provided in the `.env` file.
+
+## Entity-relationship diagram
+
+![Untitled](https://user-images.githubusercontent.com/32570823/206445241-c92ca862-372f-471d-8055-cc6396259240.png)
