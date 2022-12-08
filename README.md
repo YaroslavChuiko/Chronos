@@ -30,8 +30,6 @@
 </div>
 
 <br/>
-<br/>
-
 
 ## Install & run
 
