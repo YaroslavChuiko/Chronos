@@ -1,6 +1,6 @@
 <head>
     <div align="center">
-        <h1 align="center">Chronos-Backend</h2>
+        <h1 align="center">Chronos-Backend</h1>
     </div>
 </head>
 
